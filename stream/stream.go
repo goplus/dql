@@ -24,12 +24,14 @@ import (
 )
 
 var (
+	// ErrUnknownScheme is returned when an unknown scheme is encountered in a URL.
 	ErrUnknownScheme = errors.New("unknown scheme")
 )
 
 // -------------------------------------------------------------------------------------
 
-type OpenFunc = func(file string) (io.ReadCloser, error)
+// OpenFunc defines the function type for opening a resource by URL.
+type OpenFunc = func(url string) (io.ReadCloser, error)
 
 var (
 	openers = map[string]OpenFunc{}
@@ -40,6 +42,9 @@ func Register(scheme string, open OpenFunc) {
 	openers[scheme] = open
 }
 
+// Open opens a resource identified by the given URL.
+// It supports different schemes by utilizing registered open functions.
+// If the URL has no scheme, it is treated as a file path.
 func Open(url string) (io.ReadCloser, error) {
 	scheme := schemeOf(url)
 	if scheme == "" {
