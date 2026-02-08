@@ -15,6 +15,9 @@ var (
 	ErrMultiEntities = errors.New("too many entities found")
 )
 
+// nopIter is a no-operation iterator that yields no values.
+func nopIter[T any](yield func(T) bool) {}
+
 // -----------------------------------------------------------------------------
 
 // Value represents an attribute value or an error.
@@ -31,6 +34,9 @@ type ValueSet struct {
 
 // XGo_Enum returns an iterator over the Values in the ValueSet.
 func (p ValueSet) XGo_Enum() iter.Seq[Value] {
+	if p.Err != nil {
+		return nopIter[Value]
+	}
 	return p.Data
 }
 
@@ -107,6 +113,7 @@ func Source(r any) (ret NodeSet) {
 		if err != nil {
 			return NodeSet{Err: err}
 		}
+		defer f.Close()
 		return New(f)
 	case []byte:
 		r := bytes.NewReader(v)
@@ -124,6 +131,9 @@ func Source(r any) (ret NodeSet) {
 
 // XGo_Enum returns an iterator over the nodes in the NodeSet.
 func (p NodeSet) XGo_Enum() iter.Seq[*Node] {
+	if p.Err != nil {
+		return nopIter[*Node]
+	}
 	return p.Data
 }
 
