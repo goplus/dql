@@ -145,18 +145,24 @@ func (p NodeSet) XGo_Any() NodeSet {
 	}
 	return NodeSet{
 		Data: func(yield func(*Node) bool) {
-			ok := true
 			p.Data(func(node *Node) bool {
-				if ok = yield(node); ok {
-					node.Descendants()(func(c *Node) bool {
-						ok = yield(c)
-						return ok
-					})
-				}
-				return ok
+				return rangeAnyNodes(node, yield)
 			})
 		},
 	}
+}
+
+// rangeAnyNodes recursively yields the node and all its descendant nodes.
+func rangeAnyNodes(n *Node, yield func(*Node) bool) bool {
+	if !yield(n) {
+		return false
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if !rangeAnyNodes(c, yield) {
+			return false
+		}
+	}
+	return true
 }
 
 // XGo_Attr returns a ValueSet containing the values of the specified attribute
