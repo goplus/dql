@@ -32,16 +32,13 @@ var (
 	ErrMultiEntities = util.ErrMultiEntities
 )
 
-// Value represents a YAML value.
+// Value represents a YAML value or an error.
 type Value = maps.Value
 
 // ValueSet represents a set of YAML values.
 type ValueSet = maps.ValueSet
 
 // -----------------------------------------------------------------------------
-
-// Option represents a YAML decode option.
-type Option = yaml.DecodeOption
 
 // Node represents a map[string]any node.
 type Node = map[string]any
@@ -50,7 +47,7 @@ type Node = map[string]any
 type NodeSet = maps.NodeSet
 
 // New creates a YAML NodeSet from YAML data read from r.
-func New(r io.Reader, opts ...Option) NodeSet {
+func New(r io.Reader, opts ...yaml.DecodeOption) NodeSet {
 	var data map[string]any
 	err := yaml.NewDecoder(r, opts...).Decode(&data)
 	if err != nil {
@@ -64,10 +61,10 @@ func New(r io.Reader, opts ...Option) NodeSet {
 // - []byte: reads YAML data from the byte slice.
 // - io.Reader: reads YAML data from the provided reader.
 // - map[string]any: creates a NodeSet containing the single provided node.
-// - iter.Seq[Node]: directly uses the provided sequence of nodes.
+// - iter.Seq2[string, Node]: directly uses the provided sequence of nodes.
 // - NodeSet: returns the provided NodeSet as is.
 // If the source type is unsupported, it panics.
-func Source(r any, opts ...Option) (ret NodeSet) {
+func Source(r any, opts ...yaml.DecodeOption) (ret NodeSet) {
 	switch v := r.(type) {
 	case string:
 		f, err := stream.Open(v)

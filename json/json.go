@@ -32,7 +32,7 @@ var (
 	ErrMultiEntities = util.ErrMultiEntities
 )
 
-// Value represents a JSON value.
+// Value represents a JSON value or an error.
 type Value = maps.Value
 
 // ValueSet represents a set of JSON values.
@@ -61,7 +61,7 @@ func New(r io.Reader) NodeSet {
 // - []byte: reads JSON data from the byte slice.
 // - io.Reader: reads JSON data from the provided reader.
 // - map[string]any: creates a NodeSet containing the single provided node.
-// - iter.Seq[Node]: directly uses the provided sequence of nodes.
+// - iter.Seq2[string, Node]: directly uses the provided sequence of nodes.
 // - NodeSet: returns the provided NodeSet as is.
 // If the source type is unsupported, it panics.
 func Source(r any) (ret NodeSet) {

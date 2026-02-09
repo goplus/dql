@@ -50,7 +50,7 @@ func New(doc Node) NodeSet {
 
 // Source creates a NodeSet from various types of sources:
 // - map[string]any: creates a NodeSet containing the single provided node.
-// - iter.Seq[Node]: directly uses the provided sequence of nodes.
+// - iter.Seq2[string, Node]: directly uses the provided sequence of nodes.
 // - NodeSet: returns the provided NodeSet as is.
 // If the source type is unsupported, it panics.
 func Source(r any) (ret NodeSet) {

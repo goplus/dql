@@ -71,7 +71,7 @@ func New(doc Node) NodeSet {
 
 // Source creates a NodeSet from various types of sources:
 // - reflect.Value: creates a NodeSet containing the single provided node.
-// - iter.Seq[Node]: directly uses the provided sequence of nodes.
+// - iter.Seq2[string, Node]: directly uses the provided sequence of nodes.
 // - NodeSet: returns the provided NodeSet as is.
 // - any other type: uses reflect.ValueOf to create a NodeSet.
 func Source(r any) (ret NodeSet) {
