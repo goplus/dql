@@ -24,12 +24,6 @@ import (
 	"github.com/goccy/go-yaml"
 	"github.com/goplus/dql/maps"
 	"github.com/goplus/dql/stream"
-	"github.com/goplus/dql/util"
-)
-
-var (
-	ErrNotFound      = util.ErrNotFound
-	ErrMultiEntities = util.ErrMultiEntities
 )
 
 // Value represents a YAML value or an error.

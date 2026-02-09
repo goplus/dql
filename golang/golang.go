@@ -26,12 +26,6 @@ import (
 	"reflect"
 
 	"github.com/goplus/dql/reflects"
-	"github.com/goplus/dql/util"
-)
-
-var (
-	ErrNotFound      = util.ErrNotFound
-	ErrMultiEntities = util.ErrMultiEntities
 )
 
 // Value represents an attribute value or an error.

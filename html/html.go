@@ -26,11 +26,6 @@ import (
 	"golang.org/x/net/html"
 )
 
-var (
-	ErrNotFound      = util.ErrNotFound
-	ErrMultiEntities = util.ErrMultiEntities
-)
-
 // Value represents an attribute value or an error.
 type Value = util.Value[string]
 
@@ -211,7 +206,7 @@ func nodeAttr(node *Node, name string, yield func(Value) bool) bool {
 		}
 	}
 notFound:
-	yield(Value{X_1: ErrNotFound})
+	yield(Value{X_1: util.ErrNotFound})
 	return true
 }
 
@@ -220,7 +215,7 @@ func (p NodeSet) XGo_0() (val *Node, err error) {
 	if p.Err != nil {
 		return nil, p.Err
 	}
-	err = ErrNotFound
+	err = util.ErrNotFound
 	p.Data(func(n *Node) bool {
 		val, err = n, nil
 		return false
@@ -235,14 +230,14 @@ func (p NodeSet) XGo_1() (val *Node, err error) {
 		return nil, p.Err
 	}
 	first := true
-	err = ErrNotFound
+	err = util.ErrNotFound
 	p.Data(func(n *Node) bool {
 		if first {
 			val, err = n, nil
 			first = false
 			return true
 		}
-		err = ErrMultiEntities
+		err = util.ErrMultiEntities
 		return false
 	})
 	return
