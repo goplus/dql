@@ -226,17 +226,17 @@ func (p NodeSet) XGo_Attr(name string) ValueSet {
 	return ValueSet{
 		Data: func(yield func(Value) bool) {
 			p.Data(func(node *Node) bool {
-				return nodeAttr(node, name, yield)
+				return yieldAttr(node, name, yield)
 			})
 		},
 	}
 }
 
-// nodeAttr retrieves the value of the specified attribute from the node.
+// yieldAttr retrieves the value of the specified attribute from the node.
 // If the attribute is not found, it yields a Value with ErrNotFound.
 // If the attribute name is "_text", it retrieves the text content of
 // the node.
-func nodeAttr(node *Node, name string, yield func(Value) bool) bool {
+func yieldAttr(node *Node, name string, yield func(Value) bool) bool {
 	switch name {
 	case "_text":
 		for _, c := range node.Children {
@@ -252,8 +252,7 @@ func nodeAttr(node *Node, name string, yield func(Value) bool) bool {
 			}
 		}
 	}
-	yield(Value{X_1: util.ErrNotFound})
-	return true
+	return yield(Value{X_1: util.ErrNotFound})
 }
 
 // XGo_0 returns the first node in the NodeSet, or ErrNotFound if the set is empty.

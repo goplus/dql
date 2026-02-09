@@ -187,17 +187,17 @@ func (p NodeSet) XGo_Attr(name string) ValueSet {
 	return ValueSet{
 		Data: func(yield func(Value) bool) {
 			p.Data(func(node *Node) bool {
-				return nodeAttr(node, name, yield)
+				return yieldAttr(node, name, yield)
 			})
 		},
 	}
 }
 
-// nodeAttr retrieves the value of the specified attribute from the node.
+// yieldAttr retrieves the value of the specified attribute from the node.
 // It handles special attribute names for text, comment, and doctype nodes.
 // If the attribute is found, it yields the value; otherwise, it yields ErrNotFound.
 // Returns true to continue iteration, false to stop.
-func nodeAttr(node *Node, name string, yield func(Value) bool) bool {
+func yieldAttr(node *Node, name string, yield func(Value) bool) bool {
 	var typ html.NodeType
 	switch name {
 	case "_text":
@@ -220,8 +220,7 @@ func nodeAttr(node *Node, name string, yield func(Value) bool) bool {
 		}
 	}
 notFound:
-	yield(Value{X_1: util.ErrNotFound})
-	return true
+	return yield(Value{X_1: util.ErrNotFound})
 }
 
 // XGo_0 returns the first node in the NodeSet, or ErrNotFound if the set is empty.
