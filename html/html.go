@@ -104,13 +104,22 @@ func (p NodeSet) XGo_Node(name string) NodeSet {
 	return NodeSet{
 		Data: func(yield func(*Node) bool) {
 			p.Data(func(node *Node) bool {
-				if node.Type == html.ElementNode && node.Data == name {
-					return yield(node)
-				}
-				return true
+				return yieldNode(node, name, yield)
 			})
 		},
 	}
+}
+
+// yieldNode yields the child node with the specified name if it exists.
+func yieldNode(n *Node, name string, yield func(*Node) bool) bool {
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if c.Type == html.ElementNode && c.Data == name {
+			if !yield(c) {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 // XGo_Child returns a NodeSet containing all child nodes of the nodes in the NodeSet.
@@ -121,15 +130,20 @@ func (p NodeSet) XGo_Child() NodeSet {
 	return NodeSet{
 		Data: func(yield func(*Node) bool) {
 			p.Data(func(n *Node) bool {
-				for c := n.FirstChild; c != nil; c = c.NextSibling {
-					if !yield(c) {
-						return false
-					}
-				}
-				return true
+				return rangeChildNodes(n, yield)
 			})
 		},
 	}
+}
+
+// rangeChildNodes yields all child nodes of the given node.
+func rangeChildNodes(n *Node, yield func(*Node) bool) bool {
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if !yield(c) {
+			return false
+		}
+	}
+	return true
 }
 
 // XGo_Any returns a NodeSet containing all descendant nodes of the nodes in
