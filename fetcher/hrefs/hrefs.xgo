@@ -39,5 +39,5 @@ func URL(input any) string {
 }
 
 func init() {
-	fetcher.Register("hrefs", New, URL)
+	fetcher.register("hrefs", New, URL)
 }
