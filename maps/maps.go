@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package html
+package maps
 
 import (
-	"bytes"
-	"io"
 	"iter"
 
-	"github.com/goplus/dql/stream"
 	"github.com/goplus/dql/util"
-	"golang.org/x/net/html"
 )
 
 var (
@@ -32,71 +28,53 @@ var (
 )
 
 // Value represents an attribute value or an error.
-type Value = util.Value[string]
+type Value = util.Value[any]
 
 // ValueSet represents a set of attribute Values.
-type ValueSet = util.ValueSet[string]
+type ValueSet = util.ValueSet[any]
 
 // -----------------------------------------------------------------------------
 
-// Node represents an HTML node.
-type Node = html.Node
+// Node represents a map[string]any node.
+type Node = map[string]any
 
-// NodeSet represents a set of HTML nodes.
+// NodeSet represents a set of map[string]any nodes.
 type NodeSet struct {
-	Data iter.Seq[*Node]
+	Data iter.Seq2[string, Node]
 	Err  error
 }
 
-// New parses the HTML document from the provided reader and returns a NodeSet
-// containing the root node. If there is an error during parsing, the NodeSet's
-// Err field is set.
-func New(r io.Reader) NodeSet {
-	doc, err := html.Parse(r)
-	if err != nil {
-		return NodeSet{Err: err}
-	}
+// New creates a NodeSet containing a single provided node.
+func New(doc Node) NodeSet {
 	return NodeSet{
-		Data: func(yield func(*Node) bool) {
-			yield(doc)
+		Data: func(yield func(string, Node) bool) {
+			yield("", doc)
 		},
 	}
 }
 
 // Source creates a NodeSet from various types of sources:
-// - string: treated as an URL to read HTML content from.
-// - []byte: treated as raw HTML content.
-// - io.Reader: reads HTML content from the reader.
-// - iter.Seq[*Node]: directly uses the provided sequence of nodes.
+// - map[string]any: creates a NodeSet containing the single provided node.
+// - iter.Seq[Node]: directly uses the provided sequence of nodes.
 // - NodeSet: returns the provided NodeSet as is.
 // If the source type is unsupported, it panics.
 func Source(r any) (ret NodeSet) {
 	switch v := r.(type) {
-	case string:
-		f, err := stream.Open(v)
-		if err != nil {
-			return NodeSet{Err: err}
-		}
-		defer f.Close()
-		return New(f)
-	case []byte:
-		r := bytes.NewReader(v)
-		return New(r)
-	case io.Reader:
+	case map[string]any:
 		return New(v)
-	case iter.Seq[*Node]:
+	case iter.Seq2[string, Node]:
 		return NodeSet{Data: v}
 	case NodeSet:
 		return v
 	default:
-		panic("dql/html.Source: unsupport source type")
+		panic("dql/maps.Source: unsupport source type")
 	}
 }
 
 // XGo_Enum returns an iterator over the nodes in the NodeSet.
-func (p NodeSet) XGo_Enum() iter.Seq[*Node] {
+func (p NodeSet) XGo_Enum() iter.Seq2[string, Node] {
 	if p.Err != nil {
-		return util.NopIter[*Node]
+		return util.NopIter2[Node]
 	}
 	return p.Data
 }
@@ -107,10 +85,10 @@ func (p NodeSet) XGo_Node(name string) NodeSet {
 		return p
 	}
 	return NodeSet{
-		Data: func(yield func(*Node) bool) {
-			p.Data(func(node *Node) bool {
-				if node.Type == html.ElementNode && node.Data == name {
-					return yield(node)
+		Data: func(yield func(string, Node) bool) {
+			p.Data(func(key string, node Node) bool {
+				if v, ok := node[name].(map[string]any); ok {
+					return yield(name, v)
 				}
 				return true
 			})
@@ -124,11 +102,13 @@ func (p NodeSet) XGo_Child() NodeSet {
 		return p
 	}
 	return NodeSet{
-		Data: func(yield func(*Node) bool) {
-			p.Data(func(n *Node) bool {
-				for c := n.FirstChild; c != nil; c = c.NextSibling {
-					if !yield(c) {
-						return false
+		Data: func(yield func(string, Node) bool) {
+			p.Data(func(key string, node Node) bool {
+				for k, v := range node {
+					if child, ok := v.(map[string]any); ok {
+						if !yield(k, child) {
+							return false
+						}
 					}
 				}
 				return true
@@ -144,19 +124,27 @@ func (p NodeSet) XGo_Any() NodeSet {
 		return p
 	}
 	return NodeSet{
-		Data: func(yield func(*Node) bool) {
-			ok := true
-			p.Data(func(node *Node) bool {
-				if ok = yield(node); ok {
-					node.Descendants()(func(c *Node) bool {
-						ok = yield(c)
-						return ok
-					})
-				}
-				return ok
+		Data: func(yield func(string, Node) bool) {
+			p.Data(func(key string, node Node) bool {
+				return rangeAnyNodes(key, node, yield)
 			})
 		},
 	}
+}
+
+// rangeAnyNodes recursively yields the node and all its descendant nodes.
+func rangeAnyNodes(key string, node Node, yield func(string, Node) bool) bool {
+	if !yield(key, node) {
+		return false
+	}
+	for k, v := range node {
+		if child, ok := v.(map[string]any); ok {
+			if !rangeAnyNodes(k, child, yield) {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 // XGo_Attr returns a ValueSet containing the values of the specified attribute
@@ -168,10 +156,10 @@ func (p NodeSet) XGo_Attr(name string) ValueSet {
 	}
 	return ValueSet{
 		Data: func(yield func(Value) bool) {
-			p.Data(func(node *Node) bool {
-				for _, attr := range node.Attr {
-					if attr.Key == name {
-						return yield(Value{X_0: attr.Val})
+			p.Data(func(_ string, node Node) bool {
+				for k, v := range node {
+					if k == name {
+						return yield(Value{X_0: v})
 					}
 				}
 				yield(Value{X_1: ErrNotFound})
@@ -182,13 +170,13 @@ func (p NodeSet) XGo_Attr(name string) ValueSet {
 }
 
 // XGo_0 returns the first node in the NodeSet, or ErrNotFound if the set is empty.
-func (p NodeSet) XGo_0() (val *Node, err error) {
+func (p NodeSet) XGo_0() (key string, val Node, err error) {
 	if p.Err != nil {
-		return nil, p.Err
+		return "", nil, p.Err
 	}
 	err = ErrNotFound
-	p.Data(func(n *Node) bool {
-		val, err = n, nil
+	p.Data(func(k string, n Node) bool {
+		key, val, err = k, n, nil
 		return false
 	})
 	return
@@ -196,15 +184,15 @@ func (p NodeSet) XGo_0() (val *Node, err error) {
 
 // XGo_1 returns the first node in the NodeSet, or ErrNotFound if the set is empty.
 // If there is more than one node in the set, ErrMultiEntities is returned.
-func (p NodeSet) XGo_1() (val *Node, err error) {
+func (p NodeSet) XGo_1() (key string, val Node, err error) {
 	if p.Err != nil {
-		return nil, p.Err
+		return "", nil, p.Err
 	}
 	first := true
 	err = ErrNotFound
-	p.Data(func(n *Node) bool {
+	p.Data(func(k string, n Node) bool {
 		if first {
-			val, err = n, nil
+			key, val, err = k, n, nil
 			first = false
 			return true
 		}
