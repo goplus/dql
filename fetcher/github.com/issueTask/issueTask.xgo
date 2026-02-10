@@ -53,5 +53,5 @@ func URL(input any) string {
 }
 
 func init() {
-	fetcher.register("github/issueTask", New, URL)
+	fetcher.register("github.com/issueTask", New, URL)
 }

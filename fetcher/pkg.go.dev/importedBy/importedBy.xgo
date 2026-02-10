@@ -46,5 +46,5 @@ func URL(input any) string {
 }
 
 func init() {
-	fetcher.register("gopkg/importedBy", New, URL)
+	fetcher.register("pkg.go.dev/importedBy", New, URL)
 }
