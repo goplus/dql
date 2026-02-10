@@ -20,14 +20,8 @@ import (
 	"iter"
 	"reflect"
 
-	"github.com/goplus/dql/util"
+	"github.com/goplus/dql"
 )
-
-// Value represents an attribute value or an error.
-type Value = util.Value[any]
-
-// ValueSet represents a set of attribute Values.
-type ValueSet = util.ValueSet[any]
 
 // capitalize capitalizes the first letter of the given name.
 func capitalize(name string) string {
@@ -90,13 +84,34 @@ func Source(r any) (ret NodeSet) {
 // XGo_Enum returns an iterator over the nodes in the NodeSet.
 func (p NodeSet) XGo_Enum() iter.Seq2[string, Node] {
 	if p.Err != nil {
-		return util.NopIter2[Node]
+		return dql.NopIter2[Node]
 	}
 	return p.Data
 }
 
-// XGo_Node returns a NodeSet containing the child nodes with the specified name.
-func (p NodeSet) XGo_Node(name string) NodeSet {
+// XGo_Select returns a NodeSet containing the nodes with the specified name.
+//   - @name
+//   - @"element-name"
+func (p NodeSet) XGo_Select(name string) NodeSet {
+	if p.Err != nil {
+		return p
+	}
+	return NodeSet{
+		Data: func(yield func(string, Node) bool) {
+			p.Data(func(key string, node Node) bool {
+				if key == name {
+					return yield(key, node)
+				}
+				return true
+			})
+		},
+	}
+}
+
+// XGo_Elem returns a NodeSet containing the child nodes with the specified name.
+//   - .name
+//   - .“element-name”
+func (p NodeSet) XGo_Elem(name string) NodeSet {
 	if p.Err != nil {
 		return p
 	}
@@ -115,15 +130,6 @@ func yieldNode(node Node, name string, yield func(string, Node) bool) bool {
 		return yield(name, v)
 	}
 	return true
-}
-
-// yieldAttr yields the attribute value with the specified name if it exists.
-// If the attribute does not exist, yields a Value with ErrNotFound.
-func yieldAttr(node Node, name string, yield func(Value) bool) bool {
-	if v := lookup(node, name); v.IsValid() {
-		return yield(Value{X_0: v.Interface()})
-	}
-	return yield(Value{X_1: util.ErrNotFound})
 }
 
 func lookup(node Node, name string) (ret Node) {
@@ -229,53 +235,20 @@ func (p NodeSet) XGo_Any() NodeSet {
 	}
 }
 
-// XGo_Attr returns a ValueSet containing the values of the specified attribute
-// for each node in the NodeSet. If a node does not have the specified attribute,
-// the Value will contain ErrNotFound.
-func (p NodeSet) XGo_Attr(name string) ValueSet {
+// XGo_Attr returns the value of the first specified attribute found in the NodeSet.
+//   - $name
+//   - $“attr-name”
+func (p NodeSet) XGo_Attr(name string) (val any, err error) {
 	if p.Err != nil {
-		return ValueSet{Err: p.Err}
+		return "", p.Err
 	}
-	return ValueSet{
-		Data: func(yield func(Value) bool) {
-			p.Data(func(_ string, node Node) bool {
-				return yieldAttr(node, name, yield)
-			})
-		},
-	}
-}
-
-// XGo_0 returns the first node in the NodeSet, or ErrNotFound if the set is empty.
-func (p NodeSet) XGo_0() (key string, val Node, err error) {
-	if p.Err != nil {
-		err = p.Err
-		return
-	}
-	err = util.ErrNotFound
-	p.Data(func(k string, n Node) bool {
-		key, val, err = k, n, nil
-		return false
-	})
-	return
-}
-
-// XGo_1 returns the first node in the NodeSet, or ErrNotFound if the set is empty.
-// If there is more than one node in the set, ErrMultiEntities is returned.
-func (p NodeSet) XGo_1() (key string, val Node, err error) {
-	if p.Err != nil {
-		err = p.Err
-		return
-	}
-	first := true
-	err = util.ErrNotFound
-	p.Data(func(k string, n Node) bool {
-		if first {
-			key, val, err = k, n, nil
-			first = false
-			return true
+	err = dql.ErrNotFound
+	p.Data(func(_ string, node Node) bool {
+		if v := lookup(node, name); v.IsValid() {
+			val, err = v.Interface(), nil
+			return false
 		}
-		err = util.ErrMultiEntities
-		return false
+		return true
 	})
 	return
 }

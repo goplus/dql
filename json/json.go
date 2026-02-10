@@ -26,12 +26,6 @@ import (
 	"github.com/goplus/dql/stream"
 )
 
-// Value represents a JSON value or an error.
-type Value = maps.Value
-
-// ValueSet represents a set of JSON values.
-type ValueSet = maps.ValueSet
-
 // -----------------------------------------------------------------------------
 
 // Node represents a map[string]any node.

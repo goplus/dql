@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package util
+package dql
 
 import (
 	"errors"
-	"iter"
+	"strconv"
+	"strings"
+)
+
+const (
+	XGoPackage = true
 )
 
 var (
@@ -36,59 +41,19 @@ func NopIter2[T any](yield func(string, T) bool) {}
 
 // -----------------------------------------------------------------------------
 
-// Value represents an attribute value or an error.
-type Value[T any] = struct {
-	X_0 T
-	X_1 error
+// Int parses the given string as an integer, removing any commas and trimming
+// whitespace.
+func Int__0(text string) (int, error) {
+	return strconv.Atoi(strings.ReplaceAll(strings.TrimSpace(text), ",", ""))
 }
 
-// ValueSet represents a set of attribute Values.
-type ValueSet[T any] struct {
-	Data iter.Seq[Value[T]]
-	Err  error
-}
-
-// XGo_Enum returns an iterator over the Values in the ValueSet.
-func (p ValueSet[T]) XGo_Enum() iter.Seq[Value[T]] {
-	if p.Err != nil {
-		return NopIter[Value[T]]
+// Int parses the given string as an integer, removing any commas and trimming
+// whitespace. If an error occurs, it returns 0 and the error.
+func Int__1(text string, err error) (int, error) {
+	if err != nil {
+		return 0, err
 	}
-	return p.Data
-}
-
-// XGo_0 returns the first value in the ValueSet, or ErrNotFound if the set is empty.
-func (p ValueSet[T]) XGo_0() (val T, err error) {
-	if p.Err != nil {
-		err = p.Err
-		return
-	}
-	err = ErrNotFound
-	p.Data(func(v Value[T]) bool {
-		val, err = v.X_0, v.X_1
-		return false
-	})
-	return
-}
-
-// XGo_1 returns the first value in the ValueSet, or ErrNotFound if the set is empty.
-// If there is more than one value in the set, ErrMultiEntities is returned.
-func (p ValueSet[T]) XGo_1() (val T, err error) {
-	if p.Err != nil {
-		err = p.Err
-		return
-	}
-	first := true
-	err = ErrNotFound
-	p.Data(func(v Value[T]) bool {
-		if first {
-			val, err = v.X_0, v.X_1
-			first = false
-			return true
-		}
-		err = ErrMultiEntities
-		return false
-	})
-	return
+	return Int__0(text)
 }
 
 // -----------------------------------------------------------------------------

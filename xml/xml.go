@@ -23,15 +23,9 @@ import (
 	"iter"
 	"unsafe"
 
+	"github.com/goplus/dql"
 	"github.com/goplus/dql/stream"
-	"github.com/goplus/dql/util"
 )
-
-// Value represents an attribute value or an error.
-type Value = util.Value[string]
-
-// ValueSet represents a set of attribute Values.
-type ValueSet = util.ValueSet[string]
 
 // -----------------------------------------------------------------------------
 
@@ -126,13 +120,39 @@ func Source(r any) (ret NodeSet) {
 // XGo_Enum returns an iterator over the nodes in the NodeSet.
 func (p NodeSet) XGo_Enum() iter.Seq[*Node] {
 	if p.Err != nil {
-		return util.NopIter[*Node]
+		return dql.NopIter[*Node]
 	}
 	return p.Data
 }
 
-// XGo_Node returns a NodeSet containing the child nodes with the specified name.
-func (p NodeSet) XGo_Node(name string) NodeSet {
+// XGo_Select returns a NodeSet containing the nodes with the specified name.
+//   - @name
+//   - @"element-name"
+func (p NodeSet) XGo_Select(name string) NodeSet {
+	if p.Err != nil {
+		return p
+	}
+	return NodeSet{
+		Data: func(yield func(*Node) bool) {
+			p.Data(func(node *Node) bool {
+				return selectNode(node, name, yield)
+			})
+		},
+	}
+}
+
+// selectNode yields the node if it matches the specified name.
+func selectNode(node *Node, name string, yield func(*Node) bool) bool {
+	if node.Name.Local == name {
+		return yield(node)
+	}
+	return true
+}
+
+// XGo_Elem returns a NodeSet containing the child nodes with the specified name.
+//   - .name
+//   - .“element-name”
+func (p NodeSet) XGo_Elem(name string) NodeSet {
 	if p.Err != nil {
 		return p
 	}
@@ -215,77 +235,50 @@ func rangeAnyNodes(n *Node, yield func(*Node) bool) bool {
 	return true
 }
 
-// XGo_Attr returns a ValueSet containing the values of the specified attribute
-// for each node in the NodeSet. If a node does not have the specified attribute,
-// the Value will contain ErrNotFound.
-// If the attribute name is "_text", it retrieves the text content of the node.
-func (p NodeSet) XGo_Attr(name string) ValueSet {
-	if p.Err != nil {
-		return ValueSet{Err: p.Err}
-	}
-	return ValueSet{
-		Data: func(yield func(Value) bool) {
-			p.Data(func(node *Node) bool {
-				return yieldAttr(node, name, yield)
-			})
-		},
-	}
-}
+// -----------------------------------------------------------------------------
 
-// yieldAttr retrieves the value of the specified attribute from the node.
-// If the attribute is not found, it yields a Value with ErrNotFound.
-// If the attribute name is "_text", it retrieves the text content of
-// the node.
-func yieldAttr(node *Node, name string, yield func(Value) bool) bool {
-	switch name {
-	case "_text":
-		for _, c := range node.Children {
-			if data, ok := c.(xml.CharData); ok { // only first matched textNode returned
-				text := unsafe.String(unsafe.SliceData(data), len(data))
-				return yield(Value{X_0: text})
-			}
-		}
-	default:
+// XGo_Attr returns the value of the first specified attribute found in the NodeSet.
+//   - $name
+//   - $“attr-name”
+func (p NodeSet) XGo_Attr(name string) (val string, err error) {
+	if p.Err != nil {
+		return "", p.Err
+	}
+	err = dql.ErrNotFound
+	p.Data(func(node *Node) bool {
 		for _, attr := range node.Attr {
 			if attr.Name.Local == name {
-				return yield(Value{X_0: attr.Value})
+				val, err = attr.Value, nil
+				return false
 			}
 		}
-	}
-	return yield(Value{X_1: util.ErrNotFound})
-}
-
-// XGo_0 returns the first node in the NodeSet, or ErrNotFound if the set is empty.
-func (p NodeSet) XGo_0() (val *Node, err error) {
-	if p.Err != nil {
-		return nil, p.Err
-	}
-	err = util.ErrNotFound
-	p.Data(func(n *Node) bool {
-		val, err = n, nil
-		return false
+		return true
 	})
 	return
 }
 
-// XGo_1 returns the first node in the NodeSet, or ErrNotFound if the set is empty.
-// If there is more than one node in the set, ErrMultiEntities is returned.
-func (p NodeSet) XGo_1() (val *Node, err error) {
-	if p.Err != nil {
-		return nil, p.Err
-	}
-	first := true
-	err = util.ErrNotFound
-	p.Data(func(n *Node) bool {
-		if first {
-			val, err = n, nil
-			first = false
-			return true
+// Text returns the text content of the first text node found in the NodeSet.
+func (p NodeSet) Text() (val string, err error) {
+	err = dql.ErrNotFound
+	p.Data(func(node *Node) bool {
+		for _, c := range node.Children {
+			if data, ok := c.(xml.CharData); ok {
+				val, err = unsafe.String(unsafe.SliceData(data), len(data)), nil
+				return false
+			}
 		}
-		err = util.ErrMultiEntities
-		return false
+		return true
 	})
 	return
+}
+
+// Int parses the text content of the first text node found in the NodeSet as an integer.
+func (p NodeSet) Int() (int, error) {
+	text, err := p.Text()
+	if err != nil {
+		return 0, err
+	}
+	return dql.Int__0(text)
 }
 
 // -----------------------------------------------------------------------------

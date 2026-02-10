@@ -17,6 +17,7 @@
 package importedBy
 
 import (
+	"github.com/goplus/dql"
 	"github.com/goplus/dql/html"
 	"github.com/goplus/dql/fetcher"
 )
@@ -36,7 +37,8 @@ func New(input any, doc html.NodeSet) Result {
 		return {path, 0}
 	}
 	label := a.$"aria-label"!
-	importedBy := label[len(importedBy):].trimSpace.replaceAll(",", "").int!
+	importedBy := dql.int(label[len(importedBy):])!
+	// dql.int support comma in number string, e.g. "1,234"
 	return {path, importedBy}
 }
 

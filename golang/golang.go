@@ -28,12 +28,6 @@ import (
 	"github.com/goplus/dql/reflects"
 )
 
-// Value represents an attribute value or an error.
-type Value = reflects.Value
-
-// ValueSet represents a set of attribute Values.
-type ValueSet = reflects.ValueSet
-
 // -----------------------------------------------------------------------------
 
 type Node = reflects.Node
