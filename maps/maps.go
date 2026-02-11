@@ -25,33 +25,36 @@ import (
 // -----------------------------------------------------------------------------
 
 // Node represents a map[string]any node.
-type Node = map[string]any
+type Node struct {
+	Name     string
+	Children map[string]any
+}
 
 // NodeSet represents a set of map[string]any nodes.
 type NodeSet struct {
-	Data iter.Seq2[string, Node]
+	Data iter.Seq[Node]
 	Err  error
 }
 
-// New creates a NodeSet containing a single provided node.
-func New(doc Node) NodeSet {
+// New creates a NodeSet containing a single node from the provided map.
+func New(doc map[string]any) NodeSet {
 	return NodeSet{
-		Data: func(yield func(string, Node) bool) {
-			yield("", doc)
+		Data: func(yield func(Node) bool) {
+			yield(Node{Name: "", Children: doc})
 		},
 	}
 }
 
 // Source creates a NodeSet from various types of sources:
 // - map[string]any: creates a NodeSet containing the single provided node.
-// - iter.Seq2[string, Node]: directly uses the provided sequence of nodes.
+// - iter.Seq[Node]: directly uses the provided sequence of nodes.
 // - NodeSet: returns the provided NodeSet as is.
 // If the source type is unsupported, it panics.
 func Source(r any) (ret NodeSet) {
 	switch v := r.(type) {
 	case map[string]any:
 		return New(v)
-	case iter.Seq2[string, Node]:
+	case iter.Seq[Node]:
 		return NodeSet{Data: v}
 	case NodeSet:
 		return v
@@ -61,9 +64,9 @@ func Source(r any) (ret NodeSet) {
 }
 
 // XGo_Enum returns an iterator over the nodes in the NodeSet.
-func (p NodeSet) XGo_Enum() iter.Seq2[string, Node] {
+func (p NodeSet) XGo_Enum() iter.Seq[Node] {
 	if p.Err != nil {
-		return dql.NopIter2[Node]
+		return dql.NopIter[Node]
 	}
 	return p.Data
 }
@@ -76,10 +79,10 @@ func (p NodeSet) XGo_Select(name string) NodeSet {
 		return p
 	}
 	return NodeSet{
-		Data: func(yield func(string, Node) bool) {
-			p.Data(func(key string, node Node) bool {
-				if key == name {
-					return yield(key, node)
+		Data: func(yield func(Node) bool) {
+			p.Data(func(node Node) bool {
+				if node.Name == name {
+					return yield(node)
 				}
 				return true
 			})
@@ -95,8 +98,8 @@ func (p NodeSet) XGo_Elem(name string) NodeSet {
 		return p
 	}
 	return NodeSet{
-		Data: func(yield func(string, Node) bool) {
-			p.Data(func(_ string, node Node) bool {
+		Data: func(yield func(Node) bool) {
+			p.Data(func(node Node) bool {
 				return yieldNode(node, name, yield)
 			})
 		},
@@ -104,9 +107,9 @@ func (p NodeSet) XGo_Elem(name string) NodeSet {
 }
 
 // yieldNode yields the child node with the specified name if it exists.
-func yieldNode(node Node, name string, yield func(string, Node) bool) bool {
-	if v, ok := node[name].(map[string]any); ok {
-		return yield(name, v)
+func yieldNode(node Node, name string, yield func(Node) bool) bool {
+	if v, ok := node.Children[name].(map[string]any); ok {
+		return yield(Node{Name: name, Children: v})
 	}
 	return true
 }
@@ -117,8 +120,8 @@ func (p NodeSet) XGo_Child() NodeSet {
 		return p
 	}
 	return NodeSet{
-		Data: func(yield func(string, Node) bool) {
-			p.Data(func(_ string, node Node) bool {
+		Data: func(yield func(Node) bool) {
+			p.Data(func(node Node) bool {
 				return rangeChildNodes(node, yield)
 			})
 		},
@@ -126,10 +129,10 @@ func (p NodeSet) XGo_Child() NodeSet {
 }
 
 // rangeChildNodes yields all child nodes of the given node.
-func rangeChildNodes(node Node, yield func(string, Node) bool) bool {
-	for k, v := range node {
+func rangeChildNodes(node Node, yield func(Node) bool) bool {
+	for k, v := range node.Children {
 		if child, ok := v.(map[string]any); ok {
-			if !yield(k, child) {
+			if !yield(Node{Name: k, Children: child}) {
 				return false
 			}
 		}
@@ -146,9 +149,9 @@ func (p NodeSet) XGo_Any(name string) NodeSet {
 		return p
 	}
 	return NodeSet{
-		Data: func(yield func(string, Node) bool) {
-			p.Data(func(key string, node Node) bool {
-				return rangeAnyNodes(key, name, node, yield)
+		Data: func(yield func(Node) bool) {
+			p.Data(func(node Node) bool {
+				return rangeAnyNodes(name, node, yield)
 			})
 		},
 	}
@@ -156,15 +159,15 @@ func (p NodeSet) XGo_Any(name string) NodeSet {
 
 // rangeAnyNodes yields all descendant nodes of the given node that match the
 // specified name.
-func rangeAnyNodes(key, name string, node Node, yield func(string, Node) bool) bool {
-	if key == name {
-		if !yield(key, node) {
+func rangeAnyNodes(name string, node Node, yield func(Node) bool) bool {
+	if node.Name == name {
+		if !yield(node) {
 			return false
 		}
 	}
-	for k, v := range node {
+	for k, v := range node.Children {
 		if child, ok := v.(map[string]any); ok {
-			if !rangeAnyNodes(k, name, child, yield) {
+			if !rangeAnyNodes(name, Node{Name: k, Children: child}, yield) {
 				return false
 			}
 		}
@@ -180,8 +183,8 @@ func (p NodeSet) XGo_Attr(name string) (val any, err error) {
 		return "", p.Err
 	}
 	err = dql.ErrNotFound
-	p.Data(func(_ string, node Node) bool {
-		if v, ok := node[name]; ok {
+	p.Data(func(node Node) bool {
+		if v, ok := node.Children[name]; ok {
 			val, err = v, nil
 			return false
 		}

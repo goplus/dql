@@ -28,8 +28,7 @@ import (
 
 // -----------------------------------------------------------------------------
 
-// Node represents a map[string]any node.
-type Node = map[string]any
+type Node = maps.Node
 
 // NodeSet represents a set of YAML nodes.
 type NodeSet = maps.NodeSet
@@ -48,8 +47,7 @@ func New(r io.Reader, opts ...yaml.DecodeOption) NodeSet {
 // - string: treats the string as a file path, opens the file, and reads YAML data from it.
 // - []byte: reads YAML data from the byte slice.
 // - io.Reader: reads YAML data from the provided reader.
-// - map[string]any: creates a NodeSet containing the single provided node.
-// - iter.Seq2[string, Node]: directly uses the provided sequence of nodes.
+// - iter.Seq[Node]: directly uses the provided sequence of nodes.
 // - NodeSet: returns the provided NodeSet as is.
 // If the source type is unsupported, it panics.
 func Source(r any, opts ...yaml.DecodeOption) (ret NodeSet) {
@@ -66,7 +64,7 @@ func Source(r any, opts ...yaml.DecodeOption) (ret NodeSet) {
 		return New(r, opts...)
 	case io.Reader:
 		return New(v, opts...)
-	case iter.Seq2[string, Node]:
+	case iter.Seq[Node]:
 		return NodeSet{Data: v}
 	case NodeSet:
 		return v

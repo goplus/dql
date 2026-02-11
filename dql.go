@@ -36,9 +36,6 @@ var (
 // NopIter is a no-operation iterator that yields no values.
 func NopIter[T any](yield func(T) bool) {}
 
-// NopIter2 is a no-operation iterator that yields no values.
-func NopIter2[T any](yield func(string, T) bool) {}
-
 // -----------------------------------------------------------------------------
 
 // Int parses the given string as an integer, removing any commas and trimming
