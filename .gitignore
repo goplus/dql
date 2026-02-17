@@ -10,6 +10,7 @@
 
 .DS_Store
 coverage.txt
+result.txt
 
 # Test binary, built with `go test -c`
 *.test

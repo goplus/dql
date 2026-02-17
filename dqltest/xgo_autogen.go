@@ -3,22 +3,109 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
+	"github.com/goplus/xgo/dql/fetcher"
 	_ "github.com/goplus/xgo/dql/fetcher/github.com/issueTask"
 	_ "github.com/goplus/xgo/dql/fetcher/github.com/repoList"
 	_ "github.com/goplus/xgo/dql/fetcher/hrefs"
 	_ "github.com/goplus/xgo/dql/fetcher/pkg.go.dev/importedBy"
 	_ "github.com/goplus/xgo/dql/fetcher/pytorch.org/fndoc"
 	"github.com/goplus/xgo/encoding/fs"
+	"github.com/qiniu/x/errors"
+	"github.com/qiniu/x/test"
+	"github.com/qiniu/x/test/logt"
+	"os"
+	"strings"
 )
 
 const _ = true
-//line dqltest/dqltest.xgo:25
+//line dqltest/dqltest.xgo:32
 func main() {
+//line dqltest/dqltest.xgo:32:1
+	t := logt.New()
 	for
-//line dqltest/dqltest.xgo:25:1
+//line dqltest/dqltest.xgo:34:1
 	e := range fs.New(`.`).XGo_Any("file").Match("in.htm").XGo_Enum() {
-//line dqltest/dqltest.xgo:26:1
-		fmt.Println(e.Path())
+//line dqltest/dqltest.xgo:35:1
+		path := func() (_xgo_ret string) {
+//line dqltest/dqltest.xgo:35:1
+			var _xgo_err error
+//line dqltest/dqltest.xgo:35:1
+			_xgo_ret, _xgo_err = e.Path()
+//line dqltest/dqltest.xgo:35:1
+			if _xgo_err != nil {
+//line dqltest/dqltest.xgo:35:1
+				_xgo_err = errors.NewFrame(_xgo_err, "e.path", "dqltest/dqltest.xgo", 35, "main.main")
+//line dqltest/dqltest.xgo:35:1
+				panic(_xgo_err)
+			}
+//line dqltest/dqltest.xgo:35:1
+			return
+		}()
+//line dqltest/dqltest.xgo:36:1
+		t.Log("==>", path)
+//line dqltest/dqltest.xgo:38:1
+		parts := strings.Split(path, "/")
+//line dqltest/dqltest.xgo:39:1
+		n := len(parts)
+//line dqltest/dqltest.xgo:40:1
+		fetchType := strings.Join(parts[1:n-2], "/")
+//line dqltest/dqltest.xgo:41:1
+		doc := func() (_xgo_ret any) {
+//line dqltest/dqltest.xgo:41:1
+			var _xgo_err error
+//line dqltest/dqltest.xgo:41:1
+			_xgo_ret, _xgo_err = fetcher.From(fetchType, "", path)
+//line dqltest/dqltest.xgo:41:1
+			if _xgo_err != nil {
+//line dqltest/dqltest.xgo:41:1
+				_xgo_err = errors.NewFrame(_xgo_err, "fetcher.from(fetchType, \"\", path)", "dqltest/dqltest.xgo", 41, "main.main")
+//line dqltest/dqltest.xgo:41:1
+				panic(_xgo_err)
+			}
+//line dqltest/dqltest.xgo:41:1
+			return
+		}()
+//line dqltest/dqltest.xgo:42:1
+		result := func() (_xgo_ret []byte) {
+//line dqltest/dqltest.xgo:42:1
+			var _xgo_err error
+//line dqltest/dqltest.xgo:42:1
+			_xgo_ret, _xgo_err = json.MarshalIndent(doc, "", "\t")
+//line dqltest/dqltest.xgo:42:1
+			if _xgo_err != nil {
+//line dqltest/dqltest.xgo:42:1
+				_xgo_err = errors.NewFrame(_xgo_err, "json.marshalIndent(doc, \"\", \"\\t\")", "dqltest/dqltest.xgo", 42, "main.main")
+//line dqltest/dqltest.xgo:42:1
+				panic(_xgo_err)
+			}
+//line dqltest/dqltest.xgo:42:1
+			return
+		}()
+//line dqltest/dqltest.xgo:44:1
+		dir := strings.Join(parts[:n-1], "/")
+//line dqltest/dqltest.xgo:45:1
+		outFile := dir + "/result.txt"
+//line dqltest/dqltest.xgo:46:1
+		expFile := dir + "/out.json"
+//line dqltest/dqltest.xgo:48:1
+		if test.Diff(t, outFile, result, func() (_xgo_ret []byte) {
+//line dqltest/dqltest.xgo:48:1
+			var _xgo_err error
+//line dqltest/dqltest.xgo:48:1
+			_xgo_ret, _xgo_err = os.ReadFile(expFile)
+//line dqltest/dqltest.xgo:48:1
+			if _xgo_err != nil {
+//line dqltest/dqltest.xgo:48:1
+				_xgo_err = errors.NewFrame(_xgo_err, "os.readFile(expFile)", "dqltest/dqltest.xgo", 48, "main.main")
+//line dqltest/dqltest.xgo:48:1
+				panic(_xgo_err)
+			}
+//line dqltest/dqltest.xgo:48:1
+			return
+		}()) {
+//line dqltest/dqltest.xgo:49:1
+			t.Errorln(fetchType, ": unexpect result")
+		}
 	}
 }

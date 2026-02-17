@@ -15,13 +15,37 @@
  */
 
 import (
-	_ "github.com/goplus/xgo/dql/fetcher/github.com/issueTask"
-	_ "github.com/goplus/xgo/dql/fetcher/github.com/repoList"
-	_ "github.com/goplus/xgo/dql/fetcher/hrefs"
-	_ "github.com/goplus/xgo/dql/fetcher/pkg.go.dev/importedBy"
-	_ "github.com/goplus/xgo/dql/fetcher/pytorch.org/fndoc"
+	"encoding/json"
+	"os"
+	"xgo/dql/fetcher"
+
+	"github.com/qiniu/x/test"
+	"github.com/qiniu/x/test/logt"
+
+	_ "xgo/dql/fetcher/github.com/issueTask"
+	_ "xgo/dql/fetcher/github.com/repoList"
+	_ "xgo/dql/fetcher/hrefs"
+	_ "xgo/dql/fetcher/pkg.go.dev/importedBy"
+	_ "xgo/dql/fetcher/pytorch.org/fndoc"
 )
 
+t := logt.new
+
 for e in fs`.`.**.file.match("in.htm") {
-	echo e.path
+	path := e.path!
+	t.log "==>", path
+
+	parts := path.split("/")
+	n := len(parts)
+	fetchType := parts[1:n-2].join("/")
+	doc := fetcher.from(fetchType, "", path)!
+	result := json.marshalIndent(doc, "", "\t")!
+
+	dir := parts[:n-1].join("/")
+	outFile := dir + "/result.txt"
+	expFile := dir + "/out.json"
+
+	if test.diff(t, outFile, result, os.readFile(expFile)!) {
+		t.errorln fetchType, ": unexpect result"
+	}
 }
