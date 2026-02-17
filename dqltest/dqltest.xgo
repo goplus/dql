@@ -21,6 +21,7 @@ import (
 
 	"github.com/qiniu/x/test"
 	"github.com/qiniu/x/test/logt"
+	_ "github.com/qiniu/x/stream/zip"
 
 	_ "xgo/dql/fetcher/github.com/issueTask"
 	_ "xgo/dql/fetcher/github.com/repoList"
@@ -31,14 +32,14 @@ import (
 
 t := logt.new
 
-for e in fs`.`.**.file.match("in.htm") {
+for e in fs`.`.**.file.match("in.zip") {
 	path := e.path!
 	t.log "==>", path
 
 	parts := path.split("/")
 	n := len(parts)
 	fetchType := parts[1:n-2].join("/")
-	doc := fetcher.from(fetchType, "", path)!
+	doc := fetcher.from(fetchType, "", "zip:"+path+"#index.htm")!
 	result := json.marshalIndent(doc, "", "\t")!
 
 	dir := parts[:n-1].join("/")
