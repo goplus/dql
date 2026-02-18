@@ -1,0 +1,6 @@
+{
+	"name": "eye",
+	"type": "function",
+	"sig": "(n, m=None, *, out=None, dtype=None, layout=torch.strided, device=None, requires_grad=False) → Tensor",
+	"url": "https://pytorch.org/docs/stable/generated/torch.eye.html"
+}
