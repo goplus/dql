@@ -1,0 +1,7 @@
+{
+	"url": "foo",
+	"hrefs": [
+		"foo",
+		"/bar/baz"
+	]
+}

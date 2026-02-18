@@ -46,7 +46,7 @@ for e in fs`.`.**.file.match("*.zip") {
 
 	outFile := dir + "/result.txt"
 	expFile := dir + "/out.json"
-	if test.diff(t, outFile, result, os.readFile(expFile)!) {
+	if test.diff(t, outFile, result, os.readFile(expFile)?:nil) {
 		t.errorln fetchType, ": unexpect result"
 	}
 }

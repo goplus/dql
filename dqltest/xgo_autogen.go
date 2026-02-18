@@ -100,9 +100,7 @@ func main() {
 //line dqltest/dqltest.xgo:49:1
 			if _xgo_err != nil {
 //line dqltest/dqltest.xgo:49:1
-				_xgo_err = errors.NewFrame(_xgo_err, "os.readFile(expFile)", "dqltest/dqltest.xgo", 49, "main.main")
-//line dqltest/dqltest.xgo:49:1
-				panic(_xgo_err)
+				return nil
 			}
 //line dqltest/dqltest.xgo:49:1
 			return
