@@ -26,7 +26,7 @@ func main() {
 	t := logt.New()
 	for
 //line dqltest/dqltest.xgo:35:1
-	e := range fs.New(`.`).XGo_Any("file").Match("in.zip").XGo_Enum() {
+	e := range fs.New(`.`).XGo_Any("file").Match("*.zip").XGo_Enum() {
 //line dqltest/dqltest.xgo:36:1
 		path := func() (_xgo_ret string) {
 //line dqltest/dqltest.xgo:36:1
@@ -50,62 +50,64 @@ func main() {
 //line dqltest/dqltest.xgo:40:1
 		n := len(parts)
 //line dqltest/dqltest.xgo:41:1
+		input := strings.TrimSuffix(parts[n-1], ".zip")
+//line dqltest/dqltest.xgo:42:1
 		fetchType := strings.Join(parts[1:n-2], "/")
-//line dqltest/dqltest.xgo:42:1
+//line dqltest/dqltest.xgo:43:1
 		doc := func() (_xgo_ret any) {
-//line dqltest/dqltest.xgo:42:1
+//line dqltest/dqltest.xgo:43:1
 			var _xgo_err error
-//line dqltest/dqltest.xgo:42:1
-			_xgo_ret, _xgo_err = fetcher.From(fetchType, "", "zip:"+path+"#index.htm")
-//line dqltest/dqltest.xgo:42:1
+//line dqltest/dqltest.xgo:43:1
+			_xgo_ret, _xgo_err = fetcher.From(fetchType, input, "zip:"+path+"#index.htm")
+//line dqltest/dqltest.xgo:43:1
 			if _xgo_err != nil {
-//line dqltest/dqltest.xgo:42:1
-				_xgo_err = errors.NewFrame(_xgo_err, "fetcher.from(fetchType, \"\", \"zip:\"+path+\"#index.htm\")", "dqltest/dqltest.xgo", 42, "main.main")
-//line dqltest/dqltest.xgo:42:1
+//line dqltest/dqltest.xgo:43:1
+				_xgo_err = errors.NewFrame(_xgo_err, "fetcher.from(fetchType, input, \"zip:\"+path+\"#index.htm\")", "dqltest/dqltest.xgo", 43, "main.main")
+//line dqltest/dqltest.xgo:43:1
 				panic(_xgo_err)
 			}
-//line dqltest/dqltest.xgo:42:1
+//line dqltest/dqltest.xgo:43:1
 			return
 		}()
-//line dqltest/dqltest.xgo:43:1
+//line dqltest/dqltest.xgo:44:1
 		result := func() (_xgo_ret []byte) {
-//line dqltest/dqltest.xgo:43:1
+//line dqltest/dqltest.xgo:44:1
 			var _xgo_err error
-//line dqltest/dqltest.xgo:43:1
+//line dqltest/dqltest.xgo:44:1
 			_xgo_ret, _xgo_err = json.MarshalIndent(doc, "", "\t")
-//line dqltest/dqltest.xgo:43:1
+//line dqltest/dqltest.xgo:44:1
 			if _xgo_err != nil {
-//line dqltest/dqltest.xgo:43:1
-				_xgo_err = errors.NewFrame(_xgo_err, "json.marshalIndent(doc, \"\", \"\\t\")", "dqltest/dqltest.xgo", 43, "main.main")
-//line dqltest/dqltest.xgo:43:1
+//line dqltest/dqltest.xgo:44:1
+				_xgo_err = errors.NewFrame(_xgo_err, "json.marshalIndent(doc, \"\", \"\\t\")", "dqltest/dqltest.xgo", 44, "main.main")
+//line dqltest/dqltest.xgo:44:1
 				panic(_xgo_err)
 			}
-//line dqltest/dqltest.xgo:43:1
+//line dqltest/dqltest.xgo:44:1
 			return
 		}()
-//line dqltest/dqltest.xgo:45:1
-		dir := strings.Join(parts[:n-1], "/")
 //line dqltest/dqltest.xgo:46:1
-		outFile := dir + "/result.txt"
+		dir := strings.Join(parts[:n-1], "/")
 //line dqltest/dqltest.xgo:47:1
+		outFile := dir + "/result.txt"
+//line dqltest/dqltest.xgo:48:1
 		expFile := dir + "/out.json"
-//line dqltest/dqltest.xgo:49:1
+//line dqltest/dqltest.xgo:50:1
 		if test.Diff(t, outFile, result, func() (_xgo_ret []byte) {
-//line dqltest/dqltest.xgo:49:1
+//line dqltest/dqltest.xgo:50:1
 			var _xgo_err error
-//line dqltest/dqltest.xgo:49:1
+//line dqltest/dqltest.xgo:50:1
 			_xgo_ret, _xgo_err = os.ReadFile(expFile)
-//line dqltest/dqltest.xgo:49:1
+//line dqltest/dqltest.xgo:50:1
 			if _xgo_err != nil {
-//line dqltest/dqltest.xgo:49:1
-				_xgo_err = errors.NewFrame(_xgo_err, "os.readFile(expFile)", "dqltest/dqltest.xgo", 49, "main.main")
-//line dqltest/dqltest.xgo:49:1
+//line dqltest/dqltest.xgo:50:1
+				_xgo_err = errors.NewFrame(_xgo_err, "os.readFile(expFile)", "dqltest/dqltest.xgo", 50, "main.main")
+//line dqltest/dqltest.xgo:50:1
 				panic(_xgo_err)
 			}
-//line dqltest/dqltest.xgo:49:1
+//line dqltest/dqltest.xgo:50:1
 			return
 		}()) {
-//line dqltest/dqltest.xgo:50:1
+//line dqltest/dqltest.xgo:51:1
 			t.Errorln(fetchType, ": unexpect result")
 		}
 	}

@@ -32,14 +32,15 @@ import (
 
 t := logt.new
 
-for e in fs`.`.**.file.match("in.zip") {
+for e in fs`.`.**.file.match("*.zip") {
 	path := e.path!
 	t.log "==>", path
 
 	parts := path.split("/")
 	n := len(parts)
+	input := parts[n-1].trimSuffix(".zip")
 	fetchType := parts[1:n-2].join("/")
-	doc := fetcher.from(fetchType, "", "zip:"+path+"#index.htm")!
+	doc := fetcher.from(fetchType, input, "zip:"+path+"#index.htm")!
 	result := json.marshalIndent(doc, "", "\t")!
 
 	dir := parts[:n-1].join("/")
