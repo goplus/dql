@@ -14,7 +14,7 @@ const _ = true
 //line demo/walke2b/walke2b.xgo:8
 func main() {
 //line demo/walke2b/walke2b.xgo:8:1
-	doc := ts.Source("zip:index.d.ts.zip#index.d.ts")
+	doc := ts.Source("zip:e2b.zip#index.d.ts")
 	for
 //line demo/walke2b/walke2b.xgo:10:1
 	n := range ts.NodeSet_Cast(func(_xgo_yield func(reflects.Node) bool) {
