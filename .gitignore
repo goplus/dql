@@ -12,6 +12,7 @@
 coverage.txt
 result.txt
 index.htm
+index.d.ts
 
 # Test binary, built with `go test -c`
 *.test

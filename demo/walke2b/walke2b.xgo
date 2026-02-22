@@ -1,0 +1,17 @@
+import (
+	"github.com/goplus/dql/ts"
+	"github.com/microsoft/typescript-go/ast"
+
+	_ "github.com/qiniu/x/stream/zip"
+)
+
+doc := ts.source("zip:index.d.ts.zip#index.d.ts")
+
+for n in doc.statements.nodes.*@($kind == ast.KindInterfaceDeclaration) {
+	decl := n.asInterfaceDeclaration
+	if decl.$name == "paths" {
+		for m in decl.members.nodes.* {
+			echo "==>", m.$kind
+		}
+	}
+}

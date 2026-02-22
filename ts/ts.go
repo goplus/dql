@@ -20,7 +20,9 @@ import (
 	"bytes"
 	"io"
 	"iter"
+	"os"
 	"reflect"
+	"sync"
 	"unsafe"
 
 	"github.com/goplus/xgo/dql"
@@ -81,13 +83,27 @@ type Config struct {
 	IgnoreCase                     bool
 }
 
+var (
+	cachedWd     string
+	cachedWdOnce sync.Once
+)
+
+func getWd() string {
+	cachedWdOnce.Do(func() { cachedWd, _ = os.Getwd() })
+	return cachedWd
+}
+
 // parse parses TypeScript source code from the given filename or source.
 func parse(filename string, src any, conf ...Config) (f *ast.SourceFile, err error) {
 	b, err := stream.ReadSourceFromURI(filename, src)
 	if err != nil {
 		return
 	}
-	filename = tspath.GetNormalizedAbsolutePath(filename, "")
+	if filename == "" { // allow empty filename
+		filename = "/index.ts"
+	} else {
+		filename = tspath.GetNormalizedAbsolutePath(filename, getWd())
+	}
 	var c Config
 	if len(conf) > 0 {
 		c = conf[0]
@@ -237,7 +253,6 @@ func (p NodeSet) Ok() bool {
 	return p.Err == nil
 }
 
-/*
 // XGo_Attr returns the value of the specified attribute from the first node in the
 // NodeSet. It only retrieves the attribute from the first node.
 //   - $name
@@ -255,21 +270,19 @@ func (p NodeSet) XGo_Attr__1(name string) (val any, err error) {
 	val, err = p.NodeSet.XGo_Attr__1(name)
 	if err == nil {
 		switch v := val.(type) {
-		case *ast.Ident:
-			if v != nil {
-				return v.Name, nil
+		case *ast.DeclarationName:
+			if v != nil && v.Kind == ast.KindIdentifier {
+				return v.AsIdentifier().Text, nil
 			}
-			return "", nil
-		case *ast.BasicLit:
+			/* TODO(xsw): case *ast.BasicLit:
 			if v != nil {
 				return v.Value, nil
 			}
-			return "", nil
+			return "", nil */
 		}
 	}
 	return
 }
-*/
 
 // Class returns the class name of the first node in the NodeSet.
 func (p NodeSet) Class() string {

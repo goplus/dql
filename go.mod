@@ -3,12 +3,12 @@ module github.com/goplus/dql
 go 1.26
 
 require (
-	github.com/goplus/xgo v1.6.6-0.20260222113824-d2a852a7c559
+	github.com/goplus/xgo v1.6.6-0.20260222153302-21033f0b93c2
 	github.com/microsoft/typescript-go v0.0.0-20260221173044-5c412f3902d5
 	github.com/qiniu/x v1.16.3
 )
 
-replace github.com/microsoft/typescript-go => github.com/goplus/typescript v0.1.1
+replace github.com/microsoft/typescript-go => github.com/goplus/typescript v0.1.3
 
 require (
 	github.com/go-json-experiment/json v0.0.0-20260214004413-d219187c3433 // indirect
