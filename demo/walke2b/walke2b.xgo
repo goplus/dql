@@ -1,22 +1,26 @@
 import (
 	"github.com/goplus/dql/ts"
-	"github.com/microsoft/typescript-go/ast"
-
 	_ "github.com/qiniu/x/stream/zip"
 )
 
 func dumpMembers(decl ts.NodeSet, lvl int) {
+	tab := "  ".repeat(lvl)
 	for m in decl.members.nodes.* {
 		switch m.$kind {
-		case ast.KindPropertySignature:
+		case ts.KindPropertySignature:
 			mdecl := m.asPropertySignatureDeclaration
-			echo "  ".repeat(lvl), mdecl.$name, mdecl.postfixToken.$kind == ast.KindQuestionToken
+			echo tab, mdecl.$name, mdecl.postfixToken.$kind == ts.KindQuestionToken
 			typ := mdecl.type
-			switch typ.$kind {
-			case ast.KindTypeLiteral:
-				dumpMembers(typ.asTypeLiteralNode, lvl+1)
+			switch tkind := typ.$kind.(ts.Kind); tkind {
+			case ts.KindAnyKeyword, ts.KindUnknownKeyword, ts.KindNumberKeyword,
+				ts.KindBigIntKeyword, ts.KindObjectKeyword, ts.KindBooleanKeyword,
+				ts.KindStringKeyword, ts.KindSymbolKeyword, ts.KindVoidKeyword,
+				ts.KindUndefinedKeyword, ts.KindNeverKeyword, ts.KindIntrinsicKeyword:
+				echo tab + "  ", ts.tokenToString(tkind)
+			case ts.KindTypeLiteral:
+				dumpMembers typ.asTypeLiteralNode, lvl + 1
 			default:
-				echo "  ".repeat(lvl+1), typ.$kind
+				echo tab + "  ", tkind
 			}
 		}
 	}
@@ -24,7 +28,7 @@ func dumpMembers(decl ts.NodeSet, lvl int) {
 
 doc := ts.source("zip:e2b.zip#index.d.ts")
 
-for n in doc.statements.nodes.*@($kind == ast.KindInterfaceDeclaration) {
+for n in doc.statements.nodes.*@($kind == ts.KindInterfaceDeclaration) {
 	decl := n.asInterfaceDeclaration
 	if decl.$name == "paths" {
 		dumpMembers(decl, 0)

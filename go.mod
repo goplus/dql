@@ -8,7 +8,7 @@ require (
 	github.com/qiniu/x v1.16.3
 )
 
-replace github.com/microsoft/typescript-go => github.com/goplus/typescript v0.1.5
+replace github.com/microsoft/typescript-go => github.com/goplus/typescript v0.1.6
 
 require (
 	github.com/go-json-experiment/json v0.0.0-20260214004413-d219187c3433 // indirect
