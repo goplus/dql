@@ -271,14 +271,20 @@ func (p NodeSet) XGo_Attr__1(name string) (val any, err error) {
 	if err == nil {
 		switch v := val.(type) {
 		case *ast.DeclarationName:
-			if v != nil && v.Kind == ast.KindIdentifier {
-				return v.AsIdentifier().Text, nil
-			}
-			/* TODO(xsw): case *ast.BasicLit:
 			if v != nil {
-				return v.Value, nil
+				switch v.Kind {
+				case ast.KindIdentifier:
+					return v.AsIdentifier().Text, nil
+				case ast.KindPrivateIdentifier:
+					return v.AsPrivateIdentifier().Text, nil
+				case ast.KindStringLiteral:
+					return v.AsStringLiteral().Text, nil
+				case ast.KindNumericLiteral:
+					return v.AsNumericLiteral().Text, nil
+				case ast.KindBigIntLiteral:
+					return v.AsBigIntLiteral().Text, nil
+				}
 			}
-			return "", nil */
 		}
 	}
 	return

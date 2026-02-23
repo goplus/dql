@@ -5,13 +5,29 @@ import (
 	_ "github.com/qiniu/x/stream/zip"
 )
 
+func dumpMembers(decl ts.NodeSet, lvl int) {
+	for m in decl.members.nodes.* {
+		switch m.$kind {
+		case ast.KindPropertySignature:
+			mdecl := m.asPropertySignatureDeclaration
+			echo "  ".repeat(lvl), mdecl.$name, mdecl.postfixToken.$kind == ast.KindQuestionToken
+			typ := mdecl.type
+			switch typ.$kind {
+			case ast.KindTypeLiteral:
+				dumpMembers(typ.asTypeLiteralNode, lvl+1)
+			default:
+				echo "  ".repeat(lvl+1), typ.$kind
+			}
+		}
+	}
+}
+
 doc := ts.source("zip:e2b.zip#index.d.ts")
 
 for n in doc.statements.nodes.*@($kind == ast.KindInterfaceDeclaration) {
 	decl := n.asInterfaceDeclaration
 	if decl.$name == "paths" {
-		for m in decl.members.nodes.* {
-			echo "==>", m.$kind
-		}
+		dumpMembers(decl, 0)
+		break
 	}
 }

@@ -8,45 +8,73 @@ import (
 	"github.com/goplus/xgo/dql/reflects"
 	"github.com/microsoft/typescript-go/ast"
 	_ "github.com/qiniu/x/stream/zip"
+	"strings"
 )
 
 const _ = true
-//line demo/walke2b/walke2b.xgo:8
-func main() {
 //line demo/walke2b/walke2b.xgo:8:1
+func dumpMembers(decl ts.NodeSet, lvl int) {
+	for
+//line demo/walke2b/walke2b.xgo:9:1
+	m := range decl.XGo_Elem("members").XGo_Elem("nodes").XGo_Child().XGo_Enum() {
+//line demo/walke2b/walke2b.xgo:10:1
+		switch m.XGo_Attr__0("kind") {
+//line demo/walke2b/walke2b.xgo:11:1
+		case ast.KindPropertySignature:
+//line demo/walke2b/walke2b.xgo:12:1
+			mdecl := m.XGo_Elem("asPropertySignatureDeclaration")
+//line demo/walke2b/walke2b.xgo:13:1
+			fmt.Println(strings.Repeat("  ", lvl), mdecl.XGo_Attr__0("name"), mdecl.XGo_Elem("postfixToken").XGo_Attr__0("kind") == ast.KindQuestionToken)
+//line demo/walke2b/walke2b.xgo:14:1
+			typ := mdecl.XGo_Elem("type")
+//line demo/walke2b/walke2b.xgo:15:1
+			switch typ.XGo_Attr__0("kind") {
+//line demo/walke2b/walke2b.xgo:16:1
+			case ast.KindTypeLiteral:
+//line demo/walke2b/walke2b.xgo:17:1
+				dumpMembers(typ.XGo_Elem("asTypeLiteralNode"), lvl+1)
+//line demo/walke2b/walke2b.xgo:18:1
+			default:
+//line demo/walke2b/walke2b.xgo:19:1
+				fmt.Println(strings.Repeat("  ", lvl+1), typ.XGo_Attr__0("kind"))
+			}
+		}
+	}
+}
+//line demo/walke2b/walke2b.xgo:25
+func main() {
+//line demo/walke2b/walke2b.xgo:25:1
 	doc := ts.Source("zip:e2b.zip#index.d.ts")
 	for
-//line demo/walke2b/walke2b.xgo:10:1
+//line demo/walke2b/walke2b.xgo:27:1
 	n := range ts.NodeSet_Cast(func(_xgo_yield func(reflects.Node) bool) {
-//line demo/walke2b/walke2b.xgo:10:1
+//line demo/walke2b/walke2b.xgo:27:1
 		doc.XGo_Elem("statements").XGo_Elem("nodes").XGo_Child().XGo_Enum()(func(self ts.NodeSet) bool {
-//line demo/walke2b/walke2b.xgo:10:1
+//line demo/walke2b/walke2b.xgo:27:1
 			if self.XGo_Attr__0("kind") == ast.KindInterfaceDeclaration {
-//line demo/walke2b/walke2b.xgo:10:1
+//line demo/walke2b/walke2b.xgo:27:1
 				if
-//line demo/walke2b/walke2b.xgo:10:1
+//line demo/walke2b/walke2b.xgo:27:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line demo/walke2b/walke2b.xgo:10:1
+//line demo/walke2b/walke2b.xgo:27:1
 					if !_xgo_yield(_xgo_val) {
-//line demo/walke2b/walke2b.xgo:10:1
+//line demo/walke2b/walke2b.xgo:27:1
 						return false
 					}
 				}
 			}
-//line demo/walke2b/walke2b.xgo:10:1
+//line demo/walke2b/walke2b.xgo:27:1
 			return true
 		})
 	}).XGo_Enum() {
-//line demo/walke2b/walke2b.xgo:11:1
+//line demo/walke2b/walke2b.xgo:28:1
 		decl := n.XGo_Elem("asInterfaceDeclaration")
-//line demo/walke2b/walke2b.xgo:12:1
+//line demo/walke2b/walke2b.xgo:29:1
 		if decl.XGo_Attr__0("name") == "paths" {
-			for
-//line demo/walke2b/walke2b.xgo:13:1
-			m := range decl.XGo_Elem("members").XGo_Elem("nodes").XGo_Child().XGo_Enum() {
-//line demo/walke2b/walke2b.xgo:14:1
-				fmt.Println("==>", m.XGo_Attr__0("kind"))
-			}
+//line demo/walke2b/walke2b.xgo:30:1
+			dumpMembers(decl, 0)
+//line demo/walke2b/walke2b.xgo:31:1
+			break
 		}
 	}
 }
