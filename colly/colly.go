@@ -18,9 +18,11 @@ package colly
 
 import (
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gocolly/colly/v2"
+	"github.com/goplus/dql/colly/headless"
 )
 
 const (
@@ -32,10 +34,13 @@ const (
 type App struct {
 	c     *colly.Collector
 	sites []*Site
+
+	concurrency int
 }
 
 func (p *App) initApp(sites []iSiteProto) {
 	p.c = colly.NewCollector()
+	p.concurrency = 4 // Default concurrency level for headless browser.
 	for _, site := range sites {
 		site.initSite(p)
 		site.Main()
@@ -56,37 +61,37 @@ func (p *App) Run() {
 			log.Fatalln("Creating cache directory failed:", err)
 		}
 	}
+
+	disp := newSiteDispatcher(p.sites)
+	tr := headless.NewTransport(p.concurrency, http.DefaultTransport, func(req *http.Request) headless.RequestOptions {
+		url := req.URL
+		if site, ok := disp.getSite(url); ok {
+			return site.reqOpts
+		}
+		return headless.Fallback()
+	})
+	defer tr.Close()
+	c.WithTransport(tr)
+
+	c.OnRequest(func(req *colly.Request) {
+		url := req.URL
+		if site, ok := disp.getSite(url); ok {
+			log.Println("==> Visiting", url)
+			req.Ctx.Put("site", site)
+		} else {
+			log.Println("==> Ignoring", url)
+			req.Abort() // No site matches the URL, so abort the request.
+		}
+	})
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		href := e.Attr("href")
 		e.Request.Visit(href)
-	})
-	c.OnRequest(func(r *colly.Request) {
-		log.Println("==> Visiting", r.URL.String())
 	})
 	for _, site := range p.sites {
 		for _, startURL := range site.startURLs {
 			c.Visit(startURL)
 		}
 	}
-}
-
-// -----------------------------------------------------------------------------
-
-type Site struct {
-	baseURLs  []string
-	startURLs []string
-}
-
-func (p *Site) initSite(app *App) {
-	app.sites = append(app.sites, p)
-}
-
-func (p *Site) BaseURL(baseURLs ...string) {
-	p.baseURLs = baseURLs
-}
-
-func (p *Site) Start(startURLs ...string) {
-	p.startURLs = startURLs
 }
 
 // -----------------------------------------------------------------------------
