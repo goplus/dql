@@ -26,6 +26,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 )
 
@@ -168,10 +169,26 @@ func (t *Transport) render(req *http.Request, waitBeforeFetch chromedp.Action) (
 	ctx, cancel := context.WithTimeout(tabCtx, t.timeout)
 	defer cancel()
 
+	targetURL := req.URL.String()
+
+	// Register the listener before any tasks run so no events are missed.
+	// EventResponseReceived fires for every resource (scripts, images, etc.);
+	// we filter to ResourceTypeDocument to capture only the top-level navigation.
+	// The URL comparison handles same-URL redirects; for cross-URL redirects,
+	// the final document URL is captured separately via chromedp.Location below.
 	status = 200
-	finalURL = req.URL.String()
+	chromedp.ListenTarget(ctx, func(ev any) {
+		if e, ok := ev.(*network.EventResponseReceived); ok {
+			if e.Type == network.ResourceTypeDocument &&
+				e.Response.URL == targetURL {
+				status = int(e.Response.Status)
+			}
+		}
+	})
+
+	finalURL = targetURL
 	err = chromedp.Run(
-		ctx, chromedp.Navigate(finalURL),
+		ctx, chromedp.Navigate(targetURL),
 		waitBeforeFetch,
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			return chromedp.Location(&finalURL).Do(ctx)
