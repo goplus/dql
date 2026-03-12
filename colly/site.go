@@ -35,6 +35,7 @@ type Site struct {
 }
 
 func (p *Site) initSite(app *App) {
+	p.reqOpts = headless.Fallback()
 	app.sites = append(app.sites, p)
 }
 
