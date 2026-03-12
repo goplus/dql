@@ -25,6 +25,8 @@ func (this *App) Main() {
 //line demo/kling/kling_site.gox:1
 func (this *kling) Main() {
 //line demo/kling/kling_site.gox:1:1
+	this.HeadlessWaitReady("document")
+//line demo/kling/kling_site.gox:2:1
 	this.Start("https://app.klingai.com/global/dev/document-api/quickStart/productIntroduction/overview")
 }
 func main() {
