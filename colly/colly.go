@@ -51,7 +51,10 @@ func (p *App) CacheDir(dir string) {
 func (p *App) Run() {
 	c := p.c
 	if c.CacheDir != "" {
-		os.MkdirAll(c.CacheDir, os.ModePerm)
+		err := os.MkdirAll(c.CacheDir, os.ModePerm)
+		if err != nil {
+			log.Fatalln("Creating cache directory failed:", err)
+		}
 	}
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		href := e.Attr("href")
@@ -70,13 +73,11 @@ func (p *App) Run() {
 // -----------------------------------------------------------------------------
 
 type Site struct {
-	c         *colly.Collector
 	baseURLs  []string
 	startURLs []string
 }
 
 func (p *Site) initSite(app *App) {
-	p.c = app.c
 	app.sites = append(app.sites, p)
 }
 
