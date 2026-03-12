@@ -53,10 +53,13 @@ func (p *App) Run() {
 	if c.CacheDir != "" {
 		os.MkdirAll(c.CacheDir, os.ModePerm)
 	}
+	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
+		href := e.Attr("href")
+		e.Request.Visit(href)
+	})
 	c.OnRequest(func(r *colly.Request) {
 		log.Println("==> Visiting", r.URL.String())
 	})
-	log.Println("sites:", len(p.sites))
 	for _, site := range p.sites {
 		for _, startURL := range site.startURLs {
 			c.Visit(startURL)
