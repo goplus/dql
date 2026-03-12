@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -100,9 +101,8 @@ type Transport struct {
 // `callback` is the http.RoundTripper to use for requests that should bypass
 // headless rendering.
 //
-// `useFallback` allows users to specify a function that determines whether
-// a request should bypass headless rendering and be handled by the fallback
-// transport instead.
+// `reqOpts` is called for each GET request to determine whether to use
+// headless rendering or fall back to the fallback transport.
 func NewTransport(concurrency int, callback http.RoundTripper, reqOpts func(req *http.Request) RequestOptions) *Transport {
 	t := &Transport{
 		timeout:   30 * time.Second,
@@ -111,9 +111,9 @@ func NewTransport(concurrency int, callback http.RoundTripper, reqOpts func(req 
 		fallback:  callback,
 	}
 
-	allocOpts := append(chromedp.DefaultExecAllocatorOptions[:],
+	allocOpts := append(slices.Clone(chromedp.DefaultExecAllocatorOptions[:]),
 		chromedp.Flag("headless", true),
-		chromedp.Flag("no-sandbox", true),
+		chromedp.Flag("no-sandbox", true), // TODO(xsw): check this
 		chromedp.Flag("disable-dev-shm-usage", true),
 		chromedp.Flag("disable-gpu", true),
 	)
@@ -162,10 +162,10 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 // waits for the page to be ready, and returns the outer HTML.
 func (t *Transport) render(req *http.Request, waitBeforeFetch chromedp.Action) (html string, status int, finalURL string, err error) {
 	// Each tab gets its own context derived from the shared allocator.
-	ctx, cancel := chromedp.NewContext(t.allocCtx)
-	defer cancel()
+	tabCtx, tabCancel := chromedp.NewContext(t.allocCtx)
+	defer tabCancel()
 
-	ctx, cancel = context.WithTimeout(ctx, t.timeout)
+	ctx, cancel := context.WithTimeout(tabCtx, t.timeout)
 	defer cancel()
 
 	status = 200
@@ -186,7 +186,7 @@ func (t *Transport) render(req *http.Request, waitBeforeFetch chromedp.Action) (
 func buildResponse(req *http.Request, html string, statusCode int, finalURL string) *http.Response {
 	body := io.NopCloser(strings.NewReader(html))
 	resp := &http.Response{
-		Status:     fmt.Sprintf("%d OK", statusCode),
+		Status:     fmt.Sprintf("%d %s", statusCode, http.StatusText(statusCode)),
 		StatusCode: statusCode,
 		Proto:      "HTTP/1.1",
 		ProtoMajor: 1,

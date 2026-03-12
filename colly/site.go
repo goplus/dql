@@ -21,64 +21,9 @@ import (
 	"log"
 	"net/url"
 	"strings"
-	"time"
 
-	"github.com/chromedp/chromedp"
 	"github.com/goplus/dql/colly/headless"
 )
-
-const (
-	defaultTimeout       = 30 * time.Second
-	defaultJSExecTimeout = 5 * time.Second
-)
-
-// -----------------------------------------------------------------------------
-
-// Headless specifies the headless browser settings of the site.
-type Headless struct {
-	WaitReady     any
-	Timeout       time.Duration
-	JSExecTimeout time.Duration
-}
-
-func (p *Headless) render(url string) (html string, err error) {
-	opts := append(chromedp.DefaultExecAllocatorOptions[:],
-		chromedp.Flag("headless", true),
-		chromedp.Flag("disable-gpu", true),
-		chromedp.Flag("no-sandbox", true),
-	)
-
-	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
-	defer cancel()
-
-	ctx, cancel := chromedp.NewContext(allocCtx)
-	defer cancel()
-
-	timeout := p.Timeout
-	if timeout == 0 {
-		timeout = defaultTimeout
-	}
-	ctx, cancel = context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	jsexecTimeout := p.JSExecTimeout
-	if jsexecTimeout == 0 {
-		jsexecTimeout = defaultJSExecTimeout
-	}
-
-	waitReady := p.WaitReady
-	if waitReady == nil {
-		waitReady = "body"
-	}
-
-	err = chromedp.Run(ctx,
-		chromedp.Navigate(url),
-		chromedp.WaitReady(waitReady),
-		chromedp.Sleep(jsexecTimeout),
-		chromedp.OuterHTML("html", &html),
-	)
-	return
-}
 
 // -----------------------------------------------------------------------------
 

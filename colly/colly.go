@@ -40,6 +40,7 @@ type App struct {
 
 func (p *App) initApp(sites []iSiteProto) {
 	p.c = colly.NewCollector()
+	p.concurrency = 4 // Default concurrency level for headless browser.
 	for _, site := range sites {
 		site.initSite(p)
 		site.Main()
@@ -69,6 +70,7 @@ func (p *App) Run() {
 		}
 		return headless.Fallback()
 	})
+	defer tr.Close()
 	c.WithTransport(tr)
 
 	c.OnRequest(func(req *colly.Request) {
