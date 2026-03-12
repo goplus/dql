@@ -24,6 +24,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/chromedp/cdproto/network"
@@ -176,12 +177,13 @@ func (t *Transport) render(req *http.Request, waitBeforeFetch chromedp.Action) (
 	// we filter to ResourceTypeDocument to capture only the top-level navigation.
 	// The URL comparison handles same-URL redirects; for cross-URL redirects,
 	// the final document URL is captured separately via chromedp.Location below.
-	status = 200
+	var atomicStatus atomic.Int64
+	atomicStatus.Store(200)
 	chromedp.ListenTarget(ctx, func(ev any) {
 		if e, ok := ev.(*network.EventResponseReceived); ok {
 			if e.Type == network.ResourceTypeDocument &&
-				e.Response.URL == targetURL {
-				status = int(e.Response.Status)
+				e.Response.Status >= 400 {
+				atomicStatus.Store(e.Response.Status)
 			}
 		}
 	})
@@ -195,6 +197,7 @@ func (t *Transport) render(req *http.Request, waitBeforeFetch chromedp.Action) (
 		}),
 		chromedp.OuterHTML("html", &html),
 	)
+	status = int(atomicStatus.Load())
 	return
 }
 
@@ -214,7 +217,7 @@ func buildResponse(req *http.Request, html string, statusCode int, finalURL stri
 	}
 
 	resp.Header.Set("Content-Type", "text/html; charset=utf-8")
-	resp.Header.Set("X-Final-URL", finalURL) // actual URL after any redirects
+	resp.Header.Set("X-Final-Url", finalURL) // actual URL after any redirects
 	resp.Header.Set("X-Rendered-By", "chromedp")
 
 	return resp
