@@ -35,6 +35,11 @@ type App struct {
 	c     *colly.Collector
 	sites []*Site
 
+	// startURLs specifies the initial URLs to start crawling. If not set, the
+	// app will use the start URLs defined in each site.
+	startURLs []string
+
+	// concurrency limits the number of browser tabs open simultaneously.
 	concurrency int
 }
 
@@ -51,6 +56,12 @@ func (p *App) initApp(sites []iSiteProto) {
 // When it's not defined, caching is disabled.
 func (p *App) CacheDir(dir string) {
 	p.c.CacheDir = dir
+}
+
+// Start specifies the initial URLs to start crawling. If not called, the app will
+// use the start URLs defined in each site.
+func (p *App) Start(startURLs ...string) {
+	p.startURLs = startURLs
 }
 
 func (p *App) Run() {
@@ -87,9 +98,15 @@ func (p *App) Run() {
 		href := e.Attr("href")
 		e.Request.Visit(href)
 	})
-	for _, site := range p.sites {
-		for _, startURL := range site.startURLs {
-			c.Visit(startURL)
+	if len(p.startURLs) > 0 {
+		for _, url := range p.startURLs {
+			c.Visit(url)
+		}
+	} else {
+		for _, site := range p.sites {
+			for _, startURL := range site.startURLs {
+				c.Visit(startURL)
+			}
 		}
 	}
 }
