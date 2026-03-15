@@ -28,6 +28,8 @@ import (
 	_ "xgo/dql/fetcher/hrefs"
 	_ "xgo/dql/fetcher/pkg.go.dev/importedBy"
 	_ "xgo/dql/fetcher/pytorch.org/fndoc"
+
+	_ "github.com/goplus/dql/fetcher/klingai"
 )
 
 t := logt.new
