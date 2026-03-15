@@ -1,0 +1,122 @@
+package model
+
+import (
+	"github.com/goplus/xgo/dql/html"
+	"github.com/goplus/xgo/dql/fetcher"
+)
+
+type Param struct {
+	Name        string
+	Type        string                       // string, etc.
+	Required    string                       // Required or Optional
+	Defval      string   `json:",omitempty"` // default value
+	Description string   `json:",omitempty"` // description
+	Enumvals    []string `json:",omitempty"` // enum values
+}
+
+type Request struct {
+	Method   string // GET, POST, etc.
+	Path     string
+	Language string // must be "cURL"
+	Code     string // code request in specified language
+
+	PathParams []*Param `json:",omitempty"`
+	Query      []*Param `json:",omitempty"`
+	Headers    []*Param `json:",omitempty"`
+	Body       []*Param `json:",omitempty"`
+}
+
+type Response struct {
+	Status int
+	Body   string // response body in json
+}
+
+type API struct {
+	Title string
+	Req   Request
+	Resp  Response
+}
+
+type Result struct {
+	Model string
+	Topic string
+	APIs  []*API
+}
+
+func New(input any, doc html.NodeSet) *Result {
+	apiDocumentContent := doc.**.div@($class == "api-document-content").one
+	markdownBody := apiDocumentContent.div@($class == "markdown-body").one
+	return {
+		Model: input.(string),
+		Topic: markdownBody.h1.text,
+		APIs:  [getAPI(api) for api in markdownBody.div@($class == "openapi-block")],
+	}
+}
+
+func getAPI(openapi html.NodeSet) *API {
+	endpoint := openapi.div@($class == "endpoint-wrapper").one
+	endpointContent := endpoint.div@($class == "endpoint-content").one
+	info := endpointContent.div@($class == "endpoint-embed-info").one
+	inlineCodePanel := endpointContent.div@($class == "inline-code-panel").one
+	apiCodePanel := inlineCodePanel.div@($class == "api-code-panel").one
+	codeSection := apiCodePanel.div@($class == "code-section").one
+	codeHeader := codeSection.div@($class == "code-header").one
+	codeContent := codeSection.div@($class == "code-content-wrapper").one
+	responseSection := apiCodePanel.div@($class == "response-section").one
+	responseHeader := responseSection.div@($class == "response-header").one
+	responseInfo := responseHeader.div@($class == "response-info").one
+	responseContent := responseSection.div@($class == "code-content-wrapper").one
+	ret := &API{
+		Title: endpointContent.h2.text,
+		Req: Request{
+			Method:   info.span.text,
+			Path:     info.code.text,
+			Language: codeHeader.div@($class == "language-tabs-measure").text.trimSpace,
+			Code:     codeContent.**.div@($class == "code-body").text,
+		},
+		Resp: Response{
+			Status: responseInfo.span@($class == "status-badge").int?:0,
+			Body:   responseContent.**.div@($class == "code-body").text,
+		},
+	}
+	for paramSection in endpointContent.div@($class == "param-section") {
+		sectionTitle := paramSection.h3.text
+		switch sectionTitle.trimSpace {
+		case "Request Header":
+			ret.Req.Headers = getParams(paramSection)
+		case "Request Body":
+			ret.Req.Body = getParams(paramSection)
+		case "Path Parameters":
+			ret.Req.PathParams = getParams(paramSection)
+		case "Query Parameters":
+			ret.Req.Query = getParams(paramSection)
+		default:
+			panic("unexpected param-section: " + sectionTitle)
+		}
+	}
+	return ret
+}
+
+func getParams(paramSection html.NodeSet) []*Param {
+	paramList := paramSection.div@($class == "param-list").one
+	return [getParam(param) for param in paramList.div@($class == "param-item")]
+}
+
+func getParam(param html.NodeSet) *Param {
+	paramHeader := param.div@($class == "param-header").one
+	paramBody := param.div@($class == "param-body").one
+	paramEnum := paramBody.div@($class == "param-enum").one
+	return {
+		Name: paramHeader.span@($class == "param-name").text,
+		Type: paramHeader.span@($class == "param-type").text,
+		Required: paramHeader.span@contains($class, "param-required").text,
+		Defval: paramHeader.span@($class == "param-default").text,
+		Description: paramBody.p@($class == "param-description").text,
+		Enumvals: [item.text for item in paramEnum.span@($class == "enum-value")],
+	}
+}
+
+func URL(input any) string {
+	model := input.(string)
+	return "https://app.klingai.com/dev/document-api/apiReference/model/" + model
+}
