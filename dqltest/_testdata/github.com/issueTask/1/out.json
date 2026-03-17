@@ -2,75 +2,75 @@
 	"issue": "gopkgsupport",
 	"tasks": [
 		{
-			"desc": "fmt* (Imported By: 4513111)\n",
+			"desc": "fmt* (Imported By: 4513111)",
 			"done": true
 		},
 		{
-			"desc": "time* (Imported By: 2238303)\n",
+			"desc": "time* (Imported By: 2238303)",
 			"done": true
 		},
 		{
-			"desc": "strings (Imported By: 2104027)\n",
+			"desc": "strings (Imported By: 2104027)",
 			"done": true
 		},
 		{
-			"desc": "os* (Imported By: 1956039)\n",
+			"desc": "os* (Imported By: 1956039)",
 			"done": true
 		},
 		{
-			"desc": "context (Imported By: 1460725)\n",
+			"desc": "context (Imported By: 1460725)",
 			"done": true
 		},
 		{
-			"desc": "net/http (Imported By: 1415440)\n",
+			"desc": "net/http (Imported By: 1415440)",
 			"done": false
 		},
 		{
-			"desc": "errors (Imported By: 1294097)\n",
+			"desc": "errors (Imported By: 1294097)",
 			"done": true
 		},
 		{
-			"desc": "io (Imported By: 1268791)\n",
+			"desc": "io (Imported By: 1268791)",
 			"done": true
 		},
 		{
-			"desc": "strconv (Imported By: 1206047)\n",
+			"desc": "strconv (Imported By: 1206047)",
 			"done": true
 		},
 		{
-			"desc": "encoding/json (Imported By: 1201739)\n",
+			"desc": "encoding/json (Imported By: 1201739)",
 			"done": false
 		},
 		{
-			"desc": "log (Imported By: 1117493)\n",
+			"desc": "log (Imported By: 1117493)",
 			"done": true
 		},
 		{
-			"desc": "sync* (Imported By: 1075441)\n",
+			"desc": "sync* (Imported By: 1075441)",
 			"done": true
 		},
 		{
-			"desc": "bytes (Imported By: 1021859)\n",
+			"desc": "bytes (Imported By: 1021859)",
 			"done": true
 		},
 		{
-			"desc": "io/ioutil (Imported By: 794650)\n",
+			"desc": "io/ioutil (Imported By: 794650)",
 			"done": true
 		},
 		{
-			"desc": "reflect* (Imported By: 647872)\n",
+			"desc": "reflect* (Imported By: 647872)",
 			"done": true
 		},
 		{
-			"desc": "path/filepath (Imported By: 541715)\n",
+			"desc": "path/filepath (Imported By: 541715)",
 			"done": true
 		},
 		{
-			"desc": "net (Imported By: 538522)\n",
+			"desc": "net (Imported By: 538522)",
 			"done": false
 		},
 		{
-			"desc": "math (Imported By: 502954)\n",
+			"desc": "math (Imported By: 502954)",
 			"done": true
 		}
 	]
