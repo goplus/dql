@@ -1,27 +1,27 @@
 {
 	"Model": "imageGeneration",
-	"Topic": "Image Generation\n",
+	"Topic": "Image Generation",
 	"APIs": [
 		{
-			"Title": "Create Task\n",
+			"Title": "Create Task",
 			"Req": {
 				"Method": "POST",
 				"Path": "/v1/images/generations",
 				"Language": "cURL",
-				"Code": "curl --request POST \\ --url https://api-singapore.klingai.com/v1/images/generations \\ --header 'Authorization: Bearer \u003ctoken\u003e' \\ --header 'Content-Type: application/json' \\ --data '{ \"model_name\": \"kling-v2-1\", \"prompt\": \"Generate a Pixar-style puppy\", \"negative_prompt\": \"\", \"image\": \"https://p1-kling.klingai.com/kcdn/cdn-kcdn112452/kling-qa-test/dog.png\", \"n\": 2, \"external_task_id\": \"\", \"callback_url\": \"\" }'\n\n",
+				"Code": "curl --request POST \\\n--url https://api-singapore.klingai.com/v1/images/generations \\\n--header 'Authorization: Bearer \u003ctoken\u003e' \\\n--header 'Content-Type: application/json' \\\n--data '{\n\"model_name\": \"kling-v2-1\",\n\"prompt\": \"Generate a Pixar-style puppy\",\n\"negative_prompt\": \"\",\n\"image\": \"https://p1-kling.klingai.com/kcdn/cdn-kcdn112452/kling-qa-test/dog.png\",\n\"n\": 2,\n\"external_task_id\": \"\",\n\"callback_url\": \"\"\n}'\n",
 				"Headers": [
 					{
 						"Name": "Content-Type",
 						"Type": "string",
 						"Required": "Required",
 						"Defval": "Default to application/json",
-						"Description": "Data Exchange Format\n"
+						"Description": "Data Exchange Format"
 					},
 					{
 						"Name": "Authorization",
 						"Type": "string",
 						"Required": "Required",
-						"Description": "Authentication information, refer to API authentication\n"
+						"Description": "Authentication information, refer to API authentication"
 					}
 				],
 				"Body": [
@@ -30,7 +30,7 @@
 						"Type": "string",
 						"Required": "Optional",
 						"Defval": "Default to kling-v1",
-						"Description": "Model Name\n",
+						"Description": "Model Name",
 						"Enumvals": [
 							"kling-v1",
 							"kling-v1-5",
@@ -44,25 +44,25 @@
 						"Name": "prompt",
 						"Type": "string",
 						"Required": "Required",
-						"Description": "Positive text prompt\n"
+						"Description": "Positive text prompt"
 					},
 					{
 						"Name": "negative_prompt",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Negative text prompt\n"
+						"Description": "Negative text prompt"
 					},
 					{
 						"Name": "image",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Reference Image\n"
+						"Description": "Reference Image"
 					},
 					{
 						"Name": "image_reference",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Image reference type\n",
+						"Description": "Image reference type",
 						"Enumvals": [
 							"subject",
 							"face"
@@ -73,27 +73,27 @@
 						"Type": "float",
 						"Required": "Optional",
 						"Defval": "Default to 0.5",
-						"Description": "Face reference intensity for user-uploaded images during generation\n"
+						"Description": "Face reference intensity for user-uploaded images during generation"
 					},
 					{
 						"Name": "human_fidelity",
 						"Type": "float",
 						"Required": "Optional",
 						"Defval": "Default to 0.45",
-						"Description": "Facial reference intensity, refers to the similarity of the facial features of the person in the reference image\n"
+						"Description": "Facial reference intensity, refers to the similarity of the facial features of the person in the reference image"
 					},
 					{
 						"Name": "element_list",
 						"Type": "array",
 						"Required": "Optional",
-						"Description": "Reference element list based on element library ID\n"
+						"Description": "Reference element list based on element library ID"
 					},
 					{
 						"Name": "resolution",
 						"Type": "string",
 						"Required": "Optional",
 						"Defval": "Default to 1k",
-						"Description": "Image generation resolution\n",
+						"Description": "Image generation resolution",
 						"Enumvals": [
 							"1k",
 							"2k"
@@ -104,14 +104,14 @@
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 1",
-						"Description": "Number of generated images\n"
+						"Description": "Number of generated images"
 					},
 					{
 						"Name": "aspect_ratio",
 						"Type": "string",
 						"Required": "Optional",
 						"Defval": "Default to 16:9",
-						"Description": "Aspect ratio of the generated images (width:height)\n",
+						"Description": "Aspect ratio of the generated images (width:height)",
 						"Enumvals": [
 							"16:9",
 							"9:16",
@@ -127,46 +127,46 @@
 						"Name": "watermark_info",
 						"Type": "object",
 						"Required": "Optional",
-						"Description": "Whether to generate watermarked results simultaneously\n"
+						"Description": "Whether to generate watermarked results simultaneously"
 					},
 					{
 						"Name": "callback_url",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "The callback notification address for the result of this task. If configured, the server will actively notify when the task status changes.\n"
+						"Description": "The callback notification address for the result of this task. If configured, the server will actively notify when the task status changes."
 					},
 					{
 						"Name": "external_task_id",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Customized Task ID\n"
+						"Description": "Customized Task ID"
 					}
 				]
 			},
 			"Resp": {
 				"Status": 200,
-				"Body": "{ \"code\": 0, // Error codes; specific definitions see Error codes \"message\": \"string\", // Error information \"request_id\": \"string\", // Request ID, generated by the system, for tracking and troubleshooting \"data\": { \"task_id\": \"string\", // Task ID, generated by the system \"task_status\": \"string\", // Task status: submitted, processing, succeed, failed \"task_info\": { // Task creation parameters \"external_task_id\": \"string\" // Customer-defined task ID }, \"created_at\": 1722769557708, // Task creation time, Unix timestamp, ms \"updated_at\": 1722769557708 // Task update time, Unix timestamp, ms } }\n\n"
+				"Body": "{\n\"code\": 0, // Error codes; specific definitions see Error codes\n\"message\": \"string\", // Error information\n\"request_id\": \"string\", // Request ID, generated by the system, for tracking and troubleshooting\n\"data\": {\n\"task_id\": \"string\", // Task ID, generated by the system\n\"task_status\": \"string\", // Task status: submitted, processing, succeed, failed\n\"task_info\": { // Task creation parameters\n  \"external_task_id\": \"string\" // Customer-defined task ID\n},\n\"created_at\": 1722769557708, // Task creation time, Unix timestamp, ms\n\"updated_at\": 1722769557708 // Task update time, Unix timestamp, ms\n}\n}\n"
 			}
 		},
 		{
-			"Title": "Query Task (Single)\n",
+			"Title": "Query Task (Single)",
 			"Req": {
 				"Method": "GET",
 				"Path": "/v1/images/generations/{id}",
 				"Language": "cURL",
-				"Code": "curl --request GET \\ --url https://api-singapore.klingai.com/v1/images/generations/{id} \\ --header 'Authorization: Bearer \u003ctoken\u003e'\n\n",
+				"Code": "curl --request GET \\\n--url https://api-singapore.klingai.com/v1/images/generations/{id} \\\n--header 'Authorization: Bearer \u003ctoken\u003e'\n",
 				"PathParams": [
 					{
 						"Name": "task_id",
 						"Type": "string",
 						"Required": "Required",
-						"Description": "The task ID for image generation. Request path parameter, directly fill the value in the request path.\n"
+						"Description": "The task ID for image generation. Request path parameter, directly fill the value in the request path."
 					},
 					{
 						"Name": "external_task_id",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Customized Task ID for audio generation\n"
+						"Description": "Customized Task ID for audio generation"
 					}
 				],
 				"Headers": [
@@ -175,42 +175,42 @@
 						"Type": "string",
 						"Required": "Required",
 						"Defval": "Default to application/json",
-						"Description": "Data Exchange Format\n"
+						"Description": "Data Exchange Format"
 					},
 					{
 						"Name": "Authorization",
 						"Type": "string",
 						"Required": "Required",
-						"Description": "Authentication information, refer to API authentication\n"
+						"Description": "Authentication information, refer to API authentication"
 					}
 				]
 			},
 			"Resp": {
 				"Status": 200,
-				"Body": "{ \"code\": 0, // Error codes; Specific definitions can be found in Error codes \"message\": \"string\", // Error information \"request_id\": \"string\", // Request ID, generated by the system, is used to track requests and troubleshoot problems \"data\": { \"task_id\": \"string\", // Task ID, generated by the system \"task_status\": \"string\", // Task status, Enum values: submitted, processing, succeed, failed \"task_status_msg\": \"string\", // Task status information, displaying the failure reason when the task fails (such as triggering the content risk control of the platform, etc.) \"final_unit_deduction\": \"string\", // The deduction units of task \"watermark_info\": { \"enabled\": boolean }, \"task_info\": { // Task creation parameters \"external_task_id\": \"string\" // Customer-defined task ID }, \"created_at\": 1722769557708, // Task creation time, Unix timestamp, unit ms \"updated_at\": 1722769557708, // Task update time, Unix timestamp, unit ms \"task_result\": { \"images\": [ { \"index\": 0, // Image Number, 0-9 \"url\": \"string\", // URL for generating images, such as: https://h1.inkwai.com/bs2/upload-ylab-stunt/1fa0ac67d8ce6cd55b50d68b967b3a59.png(To ensure information security, generated images/videos will be cleared after 30 days. Please make sure to save them promptly.) \"watermark_url\": \"string\" // Watermarked image download URL, anti-leech format } ] } } }\n\n"
+				"Body": "{\n\"code\": 0, // Error codes; Specific definitions can be found in Error codes\n\"message\": \"string\", // Error information\n\"request_id\": \"string\", // Request ID, generated by the system, is used to track requests and troubleshoot problems\n\"data\": {\n\"task_id\": \"string\", // Task ID, generated by the system\n\"task_status\": \"string\", // Task status, Enum values: submitted, processing, succeed, failed\n\"task_status_msg\": \"string\", // Task status information, displaying the failure reason when the task fails (such as triggering the content risk control of the platform, etc.)\n\"final_unit_deduction\": \"string\", // The deduction units of task\n\"watermark_info\": {\n  \"enabled\": boolean\n},\n\"task_info\": { // Task creation parameters\n  \"external_task_id\": \"string\" // Customer-defined task ID\n},\n\"created_at\": 1722769557708, // Task creation time, Unix timestamp, unit ms\n\"updated_at\": 1722769557708, // Task update time, Unix timestamp, unit ms\n\"task_result\": {\n  \"images\": [\n    {\n      \"index\": 0, // Image Number, 0-9\n      \"url\": \"string\", // URL for generating images, such as: https://h1.inkwai.com/bs2/upload-ylab-stunt/1fa0ac67d8ce6cd55b50d68b967b3a59.png(To ensure information security, generated images/videos will be cleared after 30 days. Please make sure to save them promptly.)\n      \"watermark_url\": \"string\" // Watermarked image download URL, anti-leech format\n    }\n  ]\n}\n}\n}\n"
 			}
 		},
 		{
-			"Title": "Query Task (List)\n",
+			"Title": "Query Task (List)",
 			"Req": {
 				"Method": "GET",
 				"Path": "/v1/images/generations",
 				"Language": "cURL",
-				"Code": "curl --request GET \\ --url 'https://api-singapore.klingai.com/v1/images/generations?pageNum=1\u0026pageSize=30' \\ --header 'Authorization: Bearer \u003ctoken\u003e'\n\n",
+				"Code": "curl --request GET \\\n--url 'https://api-singapore.klingai.com/v1/images/generations?pageNum=1\u0026pageSize=30' \\\n--header 'Authorization: Bearer \u003ctoken\u003e'\n",
 				"Query": [
 					{
 						"Name": "pageNum",
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 1",
-						"Description": "Page number\n"
+						"Description": "Page number"
 					},
 					{
 						"Name": "pageSize",
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 30",
-						"Description": "Number of items per page\n"
+						"Description": "Number of items per page"
 					}
 				],
 				"Headers": [
@@ -219,19 +219,19 @@
 						"Type": "string",
 						"Required": "Required",
 						"Defval": "Default to application/json",
-						"Description": "Data Exchange Format\n"
+						"Description": "Data Exchange Format"
 					},
 					{
 						"Name": "Authorization",
 						"Type": "string",
 						"Required": "Required",
-						"Description": "Authentication information, refer to API authentication\n"
+						"Description": "Authentication information, refer to API authentication"
 					}
 				]
 			},
 			"Resp": {
 				"Status": 200,
-				"Body": "{ \"code\": 0, // Error codes; Specific definitions can be found in Error codes \"message\": \"string\", // Error information \"request_id\": \"string\", // Request ID, generated by the system, is used to track requests and troubleshoot problems \"data\": [ { \"task_id\": \"string\", // Task ID, generated by the system \"task_status\": \"string\", // Task status, Enum values: submitted, processing, succeed, failed \"task_status_msg\": \"string\", // Task status information, displaying the failure reason when the task fails (such as triggering the content risk control of the platform, etc.) \"final_unit_deduction\": \"string\", // The deduction units of task \"watermark_info\": { \"enabled\": boolean }, \"task_info\": { // Task creation parameters \"external_task_id\": \"string\" // Customer-defined task ID }, \"created_at\": 1722769557708, // Task creation time, Unix timestamp, unit ms \"updated_at\": 1722769557708, // Task update time, Unix timestamp, unit ms \"task_result\": { \"images\": [ { \"index\": 0, // Image Number, 0-9 \"url\": \"string\", // URL for generating images, such as: https://h1.inkwai.com/bs2/upload-ylab-stunt/1fa0ac67d8ce6cd55b50d68b967b3a59.png(To ensure information security, generated images/videos will be cleared after 30 days. Please make sure to save them promptly.) \"watermark_url\": \"string\" // Watermarked image download URL, anti-leech format } ] } } ] }\n\n"
+				"Body": "{\n\"code\": 0, // Error codes; Specific definitions can be found in Error codes\n\"message\": \"string\", // Error information\n\"request_id\": \"string\", // Request ID, generated by the system, is used to track requests and troubleshoot problems\n\"data\": [\n{\n  \"task_id\": \"string\", // Task ID, generated by the system\n  \"task_status\": \"string\", // Task status, Enum values: submitted, processing, succeed, failed\n  \"task_status_msg\": \"string\", // Task status information, displaying the failure reason when the task fails (such as triggering the content risk control of the platform, etc.)\n  \"final_unit_deduction\": \"string\", // The deduction units of task\n  \"watermark_info\": {\n    \"enabled\": boolean\n  },\n  \"task_info\": { // Task creation parameters\n    \"external_task_id\": \"string\" // Customer-defined task ID\n  },\n  \"created_at\": 1722769557708, // Task creation time, Unix timestamp, unit ms\n  \"updated_at\": 1722769557708, // Task update time, Unix timestamp, unit ms\n  \"task_result\": {\n    \"images\": [\n      {\n        \"index\": 0, // Image Number, 0-9\n        \"url\": \"string\", // URL for generating images, such as: https://h1.inkwai.com/bs2/upload-ylab-stunt/1fa0ac67d8ce6cd55b50d68b967b3a59.png(To ensure information security, generated images/videos will be cleared after 30 days. Please make sure to save them promptly.)\n        \"watermark_url\": \"string\" // Watermarked image download URL, anti-leech format\n      }\n    ]\n  }\n}\n]\n}\n"
 			}
 		}
 	]
