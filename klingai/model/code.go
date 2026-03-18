@@ -106,7 +106,7 @@ func parseCommentedJson(ns dqlhtml.NodeSet) (doc any, comments NodeComments, err
 		fixed := fixJson(text) // fix model/multiElements
 		err = json.Unmarshal(unsafe.Slice(unsafe.StringData(fixed), len(fixed)), &doc)
 		if err != nil {
-			log.Println("parseCommentedJson:", text)
+			log.Println("parseCommentedJson input:", text, "\noutput:", fixed)
 		}
 	}
 	return
@@ -114,32 +114,31 @@ func parseCommentedJson(ns dqlhtml.NodeSet) (doc any, comments NodeComments, err
 
 func fixJson(text string) string {
 	level := 0
-	lines := strings.Split(text, "\n")
+	lines := strings.Split(strings.TrimRight(text, "\n"), "\n")
 	comma := false
 	for i, line := range lines {
-		line = strings.TrimRight(line, " ")
+		line = strings.TrimSuffix(strings.TrimRight(line, " "), ",")
 		lines[i] = line
-		log.Printf("line: `%s`\n", line)
 		if line != "" {
 			switch line[len(line)-1] {
-			case '{':
+			case '{', '[':
 				comma = false
 				level++
-			case '}':
+			case '}', ']':
 				if comma {
 					fix := lines[i-1]
 					lines[i-1] = fix[:len(fix)-1] // remove ','
 					log.Printf(" fix: `%s`\n", lines[i-1])
-					comma = false
 				}
 				level--
-			case ',':
-				comma = true
+				fallthrough
 			default:
-				lines[i] = line + ","
-				log.Printf(" fix: `%s`\n", lines[i])
-				comma = true
+				if i != len(lines)-1 {
+					lines[i] = line + ","
+					comma = true
+				}
 			}
+			log.Printf("line: `%s`\n", lines[i])
 		}
 	}
 	if level > 0 {
