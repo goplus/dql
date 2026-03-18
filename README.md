@@ -10,3 +10,4 @@ DQL has become part of the [XGo](https://github.com/goplus/xgo) standard library
 
 * DQL test cases and test data
 * TypeScript syntax support
+* fetcher/klingai
