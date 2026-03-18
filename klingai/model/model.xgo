@@ -1,14 +1,14 @@
 package model
 
 import (
-	"github.com/goplus/xgo/dql/html"
 	"github.com/goplus/xgo/dql/fetcher"
+	"github.com/goplus/xgo/dql/html"
 )
 
 type Param struct {
 	Name        string
-	Type        string                       // string, etc.
-	Required    string                       // Required or Optional
+	Type        string   // string, etc.
+	Required    string   // Required or Optional
 	Defval      string   `json:",omitempty"` // default value
 	Description string   `json:",omitempty"` // description
 	Enumvals    []string `json:",omitempty"` // enum values
@@ -27,8 +27,9 @@ type Request struct {
 }
 
 type Response struct {
-	Status int
-	Body   string // response body in json
+	Status   int
+	Body     any
+	Comments NodeComments
 }
 
 type API struct {
@@ -66,6 +67,7 @@ func getAPI(openapi html.NodeSet) *API {
 	responseHeader := responseSection.div@($class == "response-header").one
 	responseInfo := responseHeader.div@($class == "response-info").one
 	responseContent := responseSection.div@($class == "code-content-wrapper").one
+	respBody, comments := parseCommentedJson(responseContent.**.div@($class == "code-body"))!
 	ret := &API{
 		Title: endpointContent.h2.text,
 		Req: Request{
@@ -75,8 +77,9 @@ func getAPI(openapi html.NodeSet) *API {
 			Code:     codeContent.**.div@($class == "code-body").text,
 		},
 		Resp: Response{
-			Status: responseInfo.span@($class == "status-badge").int?:0,
-			Body:   responseContent.**.div@($class == "code-body").text,
+			Status:   responseInfo.span@($class == "status-badge").int?:0,
+			Body:     respBody,
+			Comments: comments,
 		},
 	}
 	for paramSection in endpointContent.div@($class == "param-section") {
@@ -107,12 +110,12 @@ func getParam(param html.NodeSet) *Param {
 	paramBody := param.div@($class == "param-body").one
 	paramEnum := paramBody.div@($class == "param-enum").one
 	return {
-		Name: paramHeader.span@($class == "param-name").text,
-		Type: paramHeader.span@($class == "param-type").text,
-		Required: paramHeader.span@contains($class, "param-required").text,
-		Defval: paramHeader.span@($class == "param-default").text,
+		Name:        paramHeader.span@($class == "param-name").text,
+		Type:        paramHeader.span@($class == "param-type").text,
+		Required:    paramHeader.span@contains($class, "param-required").text,
+		Defval:      paramHeader.span@($class == "param-default").text,
 		Description: paramBody.p@($class == "param-description").text,
-		Enumvals: [item.text for item in paramEnum.span@($class == "enum-value")],
+		Enumvals:    [item.text for item in paramEnum.span@($class == "enum-value")],
 	}
 }
 
