@@ -18,6 +18,7 @@ package model
 
 import (
 	"encoding/json"
+	"log"
 	"strconv"
 	"strings"
 	"unsafe"
@@ -101,5 +102,49 @@ func parseCommentedJson(ns dqlhtml.NodeSet) (doc any, comments NodeComments, err
 	}
 	comments = cc.comments
 	err = json.Unmarshal(unsafe.Slice(unsafe.StringData(text), len(text)), &doc)
+	if err != nil {
+		fixed := fixJson(text) // fix model/multiElements
+		err = json.Unmarshal(unsafe.Slice(unsafe.StringData(fixed), len(fixed)), &doc)
+		if err != nil {
+			log.Println("parseCommentedJson:", text)
+		}
+	}
 	return
+}
+
+func fixJson(text string) string {
+	level := 0
+	lines := strings.Split(text, "\n")
+	comma := false
+	for i, line := range lines {
+		line = strings.TrimRight(line, " ")
+		lines[i] = line
+		log.Printf("line: `%s`\n", line)
+		if line != "" {
+			switch line[len(line)-1] {
+			case '{':
+				comma = false
+				level++
+			case '}':
+				if comma {
+					fix := lines[i-1]
+					lines[i-1] = fix[:len(fix)-1] // remove ','
+					log.Printf(" fix: `%s`\n", lines[i-1])
+					comma = false
+				}
+				level--
+			case ',':
+				comma = true
+			default:
+				lines[i] = line + ","
+				log.Printf(" fix: `%s`\n", lines[i])
+				comma = true
+			}
+		}
+	}
+	if level > 0 {
+		lines = append(lines, "}")
+	}
+	fixed := strings.Join(lines, "\n")
+	return fixed
 }
