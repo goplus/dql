@@ -11,6 +11,7 @@ type Param struct {
 	Required    string   // Required or Optional
 	Defval      string   `json:",omitempty"` // default value
 	Description string   `json:",omitempty"` // description
+	Notes       string   `json:",omitempty"` // notes
 	Enumvals    []string `json:",omitempty"` // enum values
 }
 
@@ -115,6 +116,7 @@ func getParam(param html.NodeSet) *Param {
 		Required:    paramHeader.span@contains($class, "param-required").text,
 		Defval:      paramHeader.span@($class == "param-default").text,
 		Description: paramBody.p@($class == "param-description").text,
+		Notes:       paramBody.div@($class == "param-notes").text,
 		Enumvals:    [item.text for item in paramEnum.span@($class == "enum-value")],
 	}
 }

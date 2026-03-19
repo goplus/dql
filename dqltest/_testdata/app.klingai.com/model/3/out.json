@@ -29,31 +29,36 @@
 						"Name": "voice_name",
 						"Type": "string",
 						"Required": "Required",
-						"Description": "Voice Name"
+						"Description": "Voice Name",
+						"Notes": "The maximum length of text content is 20 characters\n\n\nThe voices that are no longer used after creation can be deleted through the API\n\n\n"
 					},
 					{
 						"Name": "voice_url",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "The URL of voice data file"
+						"Description": "The URL of voice data file",
+						"Notes": "Supports .mp3 / .wav audio file and .mp4 / .mov video file\n\n\nThe voice needs to be clean and free of noise, with only one type of human voice present, with a duration of no less than 5 seconds and no longer than 30 seconds\n\n\n"
 					},
 					{
 						"Name": "video_id",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Generated video ID, which can provide audio materials by referencing historical works"
+						"Description": "Generated video ID, which can provide audio materials by referencing historical works",
+						"Notes": "Only videos that meet the following conditions can be used to customize voice: The video is generated on V2.6 model and the value of sound parameter is on\nThe video is generated through Avatar API\nThe video is generated through Lip-Sync API\n\n\n\nThe voice needs to be clean and free of noise, with only one type of human voice present, with a duration of no less than 5 seconds and no longer than 30 seconds\n\n\n"
 					},
 					{
 						"Name": "callback_url",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "The callback notification address for the result of this task. If configured, the server will actively notify when the task status changes."
+						"Description": "The callback notification address for the result of this task. If configured, the server will actively notify when the task status changes.",
+						"Notes": "For specific message schema, see Callback Protocol\n\n\n"
 					},
 					{
 						"Name": "external_task_id",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Customized Task ID"
+						"Description": "Customized Task ID",
+						"Notes": "Will not overwrite system-generated task ID, but supports querying task by this ID\n\n\nPlease note that the customized task ID must be unique within a single user account.\n\n\n"
 					}
 				]
 			},
@@ -104,7 +109,8 @@
 						"Name": "external_task_id",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Customized Task ID for audio generation"
+						"Description": "Customized Task ID for audio generation",
+						"Notes": "The external_task_id filled in when creating the task. You can choose to query by external_task_id or task_id\nWhen creating a task, you can choose to query by external_task_id or task_id.\n\n\n"
 					}
 				],
 				"Headers": [
@@ -183,14 +189,16 @@
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 1",
-						"Description": "Page number"
+						"Description": "Page number",
+						"Notes": "Value range: [1, 1000]\n\n\n"
 					},
 					{
 						"Name": "pageSize",
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 30",
-						"Description": "Data volume per page"
+						"Description": "Data volume per page",
+						"Notes": "Value range: [1, 1000]\n\n\n"
 					}
 				],
 				"Headers": [
@@ -271,14 +279,16 @@
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 1",
-						"Description": "Page number"
+						"Description": "Page number",
+						"Notes": "Value range: [1, 1000]\n\n\n"
 					},
 					{
 						"Name": "pageSize",
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 30",
-						"Description": "Data volume per page"
+						"Description": "Data volume per page",
+						"Notes": "Value range: [1, 1000]\n\n\n"
 					}
 				],
 				"Headers": [

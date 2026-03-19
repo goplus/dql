@@ -44,25 +44,29 @@
 						"Name": "prompt",
 						"Type": "string",
 						"Required": "Required",
-						"Description": "Positive text prompt"
+						"Description": "Positive text prompt",
+						"Notes": "Cannot exceed 2500 characters\n\n\n"
 					},
 					{
 						"Name": "negative_prompt",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Negative text prompt"
+						"Description": "Negative text prompt",
+						"Notes": "Cannot exceed 2500 characters\n\n\nNote: In the Image-to-Image scenario (when the \"image\" field is not empty), negative prompts are not supported.\n\n\n"
 					},
 					{
 						"Name": "image",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Reference Image"
+						"Description": "Reference Image",
+						"Notes": "Support inputting image Base64 encoding or image URL (ensure accessibility)\n\n\nBase64 Encoding Note:\nPlease note, if you use the Base64 method, make sure all image data parameters you pass are in Base64 encoding format. When using Base64, do NOT add any prefix like data:image/png;base64,. Only provide the Base64-encoded string.\nCorrect:\n\niVBORw0KGgoAAAANSUhEUgAAAAUA...\n\n\n\n\n\n\n\n\n\n\n\n\nIncorrect:\n\ndata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...\n\n\n\n\n\n\n\n\n\n\n\n\n\nSupported image formats: .jpg / .jpeg / .png\n\n\nFile size: ≤10MB, dimensions: min 300px, aspect ratio: 1:2.5 ~ 2.5:1\n\n\nRequired when image_reference parameter is not empty\n\n\n"
 					},
 					{
 						"Name": "image_reference",
 						"Type": "string",
 						"Required": "Optional",
 						"Description": "Image reference type",
+						"Notes": "subject: character feature reference, face: character appearance reference\n\n\nWhen using face, the uploaded image must contain only one face\n\n\nRequired when using kling-v1-5 and image parameter is not empty\n\n\n\n",
 						"Enumvals": [
 							"subject",
 							"face"
@@ -73,20 +77,23 @@
 						"Type": "float",
 						"Required": "Optional",
 						"Defval": "Default to 0.5",
-						"Description": "Face reference intensity for user-uploaded images during generation"
+						"Description": "Face reference intensity for user-uploaded images during generation",
+						"Notes": "Value range: [0, 1], The larger the value, the stronger the reference intensity\n\n\nOnly kling-v1, kling-v1-5 support this parameter\n\n\n\n"
 					},
 					{
 						"Name": "human_fidelity",
 						"Type": "float",
 						"Required": "Optional",
 						"Defval": "Default to 0.45",
-						"Description": "Facial reference intensity, refers to the similarity of the facial features of the person in the reference image"
+						"Description": "Facial reference intensity, refers to the similarity of the facial features of the person in the reference image",
+						"Notes": "Only image_reference parameter is subject is available\n\n\nValue range: [0, 1], The larger the value, the stronger the reference intensity\n\n\nOnly kling-v1-5 supports this parameter\n\n\n"
 					},
 					{
 						"Name": "element_list",
 						"Type": "array",
 						"Required": "Optional",
-						"Description": "Reference element list based on element library ID"
+						"Description": "Reference element list based on element library ID",
+						"Notes": "Load with key:value format as follows:\n\n\"element_list\":[\n{ \"element_id\": long },\n{ \"element_id\": long }\n]\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe amount of reference element is related to the amount of reference image, the sum of the amount of reference element and the amount of reference image shall not exceed 10.\n\n\n"
 					},
 					{
 						"Name": "resolution",
@@ -94,6 +101,7 @@
 						"Required": "Optional",
 						"Defval": "Default to 1k",
 						"Description": "Image generation resolution",
+						"Notes": "1k: 1K standard, 2k: 2K high-res\n\n\nDifferent model versions support varying ranges. For details, refer to the Capability Map\n\n\n\n",
 						"Enumvals": [
 							"1k",
 							"2k"
@@ -104,7 +112,8 @@
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 1",
-						"Description": "Number of generated images"
+						"Description": "Number of generated images",
+						"Notes": "Value range: [1, 9]\n\n\n"
 					},
 					{
 						"Name": "aspect_ratio",
@@ -112,6 +121,7 @@
 						"Required": "Optional",
 						"Defval": "Default to 16:9",
 						"Description": "Aspect ratio of the generated images (width:height)",
+						"Notes": "Different model versions support varying ranges. For details, refer to the Capability Map\n\n\n\n",
 						"Enumvals": [
 							"16:9",
 							"9:16",
@@ -127,19 +137,22 @@
 						"Name": "watermark_info",
 						"Type": "object",
 						"Required": "Optional",
-						"Description": "Whether to generate watermarked results simultaneously"
+						"Description": "Whether to generate watermarked results simultaneously",
+						"Notes": "Defined by the enabled parameter, format:\n\n  \"watermark_info\": { \"enabled\": boolean } \n\n\n\n\n\n\n\n\n\n\n\n\n\ntrue: generate watermarked result, false: do not generate\n\n\nCustom watermarks are not currently supported\n\n\n"
 					},
 					{
 						"Name": "callback_url",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "The callback notification address for the result of this task. If configured, the server will actively notify when the task status changes."
+						"Description": "The callback notification address for the result of this task. If configured, the server will actively notify when the task status changes.",
+						"Notes": "For specific message schema, see Callback Protocol\n\n\n"
 					},
 					{
 						"Name": "external_task_id",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Customized Task ID"
+						"Description": "Customized Task ID",
+						"Notes": "Will not overwrite system-generated task ID, but supports querying task by this ID\n\n\nPlease note that the customized task ID must be unique within a single user account.\n\n\n"
 					}
 				]
 			},
@@ -190,7 +203,8 @@
 						"Name": "external_task_id",
 						"Type": "string",
 						"Required": "Optional",
-						"Description": "Customized Task ID for audio generation"
+						"Description": "Customized Task ID for audio generation",
+						"Notes": "The external_task_id filled in when creating the task. You can choose to query by external_task_id or task_id\nWhen creating a task, you can choose to query by external_task_id or task_id.\n\n\n"
 					}
 				],
 				"Headers": [
@@ -270,14 +284,16 @@
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 1",
-						"Description": "Page number"
+						"Description": "Page number",
+						"Notes": "Value range: [1, 1000]\n\n\n"
 					},
 					{
 						"Name": "pageSize",
 						"Type": "int",
 						"Required": "Optional",
 						"Defval": "Default to 30",
-						"Description": "Number of items per page"
+						"Description": "Number of items per page",
+						"Notes": "Value range: [1, 500]\n\n\n"
 					}
 				],
 				"Headers": [
