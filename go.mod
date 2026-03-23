@@ -3,7 +3,7 @@ module github.com/goplus/dql
 go 1.26
 
 require (
-	github.com/goplus/xgo v1.6.7-0.20260318051537-98c85f111d9b
+	github.com/goplus/xgo v1.6.7
 	github.com/microsoft/typescript-go v0.0.0-20260221173044-5c412f3902d5
 	github.com/qiniu/x v1.16.5
 	golang.org/x/net v0.52.0
