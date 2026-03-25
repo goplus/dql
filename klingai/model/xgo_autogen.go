@@ -508,19 +508,19 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:88:1
 		switch strings.TrimSpace(sectionTitle) {
 //line klingai/model/model.xgo:89:1
-		case "Request Header":
+		case "Request Header", "请求头":
 //line klingai/model/model.xgo:113:1
 			ret.Req.Headers = getParams(paramSection)
 //line klingai/model/model.xgo:91:1
-		case "Request Body":
+		case "Request Body", "请求体":
 //line klingai/model/model.xgo:92:1
 			ret.Req.Body = getParams(paramSection)
 //line klingai/model/model.xgo:93:1
-		case "Path Parameters":
+		case "Path Parameters", "路径参数":
 //line klingai/model/model.xgo:94:1
 			ret.Req.PathParams = getParams(paramSection)
 //line klingai/model/model.xgo:95:1
-		case "Query Parameters":
+		case "Query Parameters", "查询参数":
 //line klingai/model/model.xgo:96:1
 			ret.Req.Query = getParams(paramSection)
 //line klingai/model/model.xgo:97:1
