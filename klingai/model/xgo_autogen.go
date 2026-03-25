@@ -18,6 +18,7 @@ type Param struct {
 	Required    string
 	Defval      string   `json:",omitempty"`
 	Description string   `json:",omitempty"`
+	Notes       string   `json:",omitempty"`
 	Enumvals    []string `json:",omitempty"`
 }
 type Request struct {
@@ -45,741 +46,760 @@ type Result struct {
 	Topic string
 	APIs  []*API
 }
-//line klingai/model/model.xgo:47:1
+//line klingai/model/model.xgo:48:1
 func New(input interface{}, doc html.NodeSet) *Result {
-//line klingai/model/model.xgo:48:1
+//line klingai/model/model.xgo:49:1
 	apiDocumentContent := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:48:1
+//line klingai/model/model.xgo:49:1
 		doc.XGo_Any("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:48:1
+//line klingai/model/model.xgo:49:1
 			if self.XGo_Attr__0("class") == "api-document-content" {
-//line klingai/model/model.xgo:48:1
+//line klingai/model/model.xgo:49:1
 				if
-//line klingai/model/model.xgo:48:1
+//line klingai/model/model.xgo:49:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:48:1
+//line klingai/model/model.xgo:49:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:48:1
+//line klingai/model/model.xgo:49:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:48:1
+//line klingai/model/model.xgo:49:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:49:1
+//line klingai/model/model.xgo:50:1
 	markdownBody := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:49:1
+//line klingai/model/model.xgo:50:1
 		apiDocumentContent.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:49:1
+//line klingai/model/model.xgo:50:1
 			if self.XGo_Attr__0("class") == "markdown-body" {
-//line klingai/model/model.xgo:49:1
+//line klingai/model/model.xgo:50:1
 				if
-//line klingai/model/model.xgo:49:1
+//line klingai/model/model.xgo:50:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:49:1
+//line klingai/model/model.xgo:50:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:49:1
+//line klingai/model/model.xgo:50:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:49:1
+//line klingai/model/model.xgo:50:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:100:1
+//line klingai/model/model.xgo:101:1
 	return &Result{Model: input.(string), Topic: markdownBody.XGo_Elem("h1").Text__0(), APIs: func() (_xgo_ret []*API) {
 		for
-//line klingai/model/model.xgo:100:1
+//line klingai/model/model.xgo:101:1
 		api := range html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:50:1
+//line klingai/model/model.xgo:51:1
 			markdownBody.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:50:1
+//line klingai/model/model.xgo:51:1
 				if self.XGo_Attr__0("class") == "openapi-block" {
-//line klingai/model/model.xgo:50:1
+//line klingai/model/model.xgo:51:1
 					if
-//line klingai/model/model.xgo:50:1
+//line klingai/model/model.xgo:51:1
 					_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:50:1
+//line klingai/model/model.xgo:51:1
 						if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:50:1
+//line klingai/model/model.xgo:51:1
 							return false
 						}
 					}
 				}
-//line klingai/model/model.xgo:50:1
+//line klingai/model/model.xgo:51:1
 				return true
 			})
 		}).XGo_Enum() {
-//line klingai/model/model.xgo:100:1
+//line klingai/model/model.xgo:101:1
 			_xgo_ret = append(_xgo_ret, getAPI(api))
 		}
-//line klingai/model/model.xgo:100:1
+//line klingai/model/model.xgo:101:1
 		return
 	}()}
 }
-//line klingai/model/model.xgo:57:1
+//line klingai/model/model.xgo:58:1
 func getAPI(openapi html.NodeSet) *API {
-//line klingai/model/model.xgo:58:1
+//line klingai/model/model.xgo:59:1
 	endpoint := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:58:1
+//line klingai/model/model.xgo:59:1
 		openapi.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:58:1
+//line klingai/model/model.xgo:59:1
 			if self.XGo_Attr__0("class") == "endpoint-wrapper" {
-//line klingai/model/model.xgo:58:1
+//line klingai/model/model.xgo:59:1
 				if
-//line klingai/model/model.xgo:58:1
+//line klingai/model/model.xgo:59:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:58:1
+//line klingai/model/model.xgo:59:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:58:1
+//line klingai/model/model.xgo:59:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:58:1
+//line klingai/model/model.xgo:59:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:59:1
+//line klingai/model/model.xgo:60:1
 	endpointContent := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:59:1
+//line klingai/model/model.xgo:60:1
 		endpoint.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:59:1
+//line klingai/model/model.xgo:60:1
 			if self.XGo_Attr__0("class") == "endpoint-content" {
-//line klingai/model/model.xgo:59:1
+//line klingai/model/model.xgo:60:1
 				if
-//line klingai/model/model.xgo:59:1
+//line klingai/model/model.xgo:60:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:59:1
+//line klingai/model/model.xgo:60:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:59:1
+//line klingai/model/model.xgo:60:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:59:1
+//line klingai/model/model.xgo:60:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:60:1
+//line klingai/model/model.xgo:61:1
 	info := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:60:1
+//line klingai/model/model.xgo:61:1
 		endpointContent.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:60:1
+//line klingai/model/model.xgo:61:1
 			if self.XGo_Attr__0("class") == "endpoint-embed-info" {
-//line klingai/model/model.xgo:60:1
+//line klingai/model/model.xgo:61:1
 				if
-//line klingai/model/model.xgo:60:1
+//line klingai/model/model.xgo:61:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:60:1
+//line klingai/model/model.xgo:61:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:60:1
+//line klingai/model/model.xgo:61:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:60:1
+//line klingai/model/model.xgo:61:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:61:1
+//line klingai/model/model.xgo:62:1
 	inlineCodePanel := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:61:1
+//line klingai/model/model.xgo:62:1
 		endpointContent.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:61:1
+//line klingai/model/model.xgo:62:1
 			if self.XGo_Attr__0("class") == "inline-code-panel" {
-//line klingai/model/model.xgo:61:1
+//line klingai/model/model.xgo:62:1
 				if
-//line klingai/model/model.xgo:61:1
+//line klingai/model/model.xgo:62:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:61:1
+//line klingai/model/model.xgo:62:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:61:1
+//line klingai/model/model.xgo:62:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:61:1
+//line klingai/model/model.xgo:62:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:62:1
+//line klingai/model/model.xgo:63:1
 	apiCodePanel := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:62:1
+//line klingai/model/model.xgo:63:1
 		inlineCodePanel.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:62:1
+//line klingai/model/model.xgo:63:1
 			if self.XGo_Attr__0("class") == "api-code-panel" {
-//line klingai/model/model.xgo:62:1
+//line klingai/model/model.xgo:63:1
 				if
-//line klingai/model/model.xgo:62:1
+//line klingai/model/model.xgo:63:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:62:1
+//line klingai/model/model.xgo:63:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:62:1
+//line klingai/model/model.xgo:63:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:62:1
+//line klingai/model/model.xgo:63:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:63:1
+//line klingai/model/model.xgo:64:1
 	codeSection := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:63:1
+//line klingai/model/model.xgo:64:1
 		apiCodePanel.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:63:1
+//line klingai/model/model.xgo:64:1
 			if self.XGo_Attr__0("class") == "code-section" {
-//line klingai/model/model.xgo:63:1
+//line klingai/model/model.xgo:64:1
 				if
-//line klingai/model/model.xgo:63:1
+//line klingai/model/model.xgo:64:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:63:1
+//line klingai/model/model.xgo:64:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:63:1
+//line klingai/model/model.xgo:64:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:63:1
+//line klingai/model/model.xgo:64:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:64:1
+//line klingai/model/model.xgo:65:1
 	codeHeader := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:64:1
+//line klingai/model/model.xgo:65:1
 		codeSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:64:1
+//line klingai/model/model.xgo:65:1
 			if self.XGo_Attr__0("class") == "code-header" {
-//line klingai/model/model.xgo:64:1
+//line klingai/model/model.xgo:65:1
 				if
-//line klingai/model/model.xgo:64:1
+//line klingai/model/model.xgo:65:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:64:1
+//line klingai/model/model.xgo:65:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:64:1
+//line klingai/model/model.xgo:65:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:64:1
+//line klingai/model/model.xgo:65:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:65:1
+//line klingai/model/model.xgo:66:1
 	codeContent := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:65:1
+//line klingai/model/model.xgo:66:1
 		codeSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:65:1
+//line klingai/model/model.xgo:66:1
 			if self.XGo_Attr__0("class") == "code-content-wrapper" {
-//line klingai/model/model.xgo:65:1
+//line klingai/model/model.xgo:66:1
 				if
-//line klingai/model/model.xgo:65:1
+//line klingai/model/model.xgo:66:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:65:1
+//line klingai/model/model.xgo:66:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:65:1
+//line klingai/model/model.xgo:66:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:65:1
+//line klingai/model/model.xgo:66:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:66:1
+//line klingai/model/model.xgo:67:1
 	responseSection := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:66:1
+//line klingai/model/model.xgo:67:1
 		apiCodePanel.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:66:1
+//line klingai/model/model.xgo:67:1
 			if self.XGo_Attr__0("class") == "response-section" {
-//line klingai/model/model.xgo:66:1
+//line klingai/model/model.xgo:67:1
 				if
-//line klingai/model/model.xgo:66:1
+//line klingai/model/model.xgo:67:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:66:1
+//line klingai/model/model.xgo:67:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:66:1
+//line klingai/model/model.xgo:67:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:66:1
+//line klingai/model/model.xgo:67:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:67:1
+//line klingai/model/model.xgo:68:1
 	responseHeader := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:67:1
+//line klingai/model/model.xgo:68:1
 		responseSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:67:1
+//line klingai/model/model.xgo:68:1
 			if self.XGo_Attr__0("class") == "response-header" {
-//line klingai/model/model.xgo:67:1
+//line klingai/model/model.xgo:68:1
 				if
-//line klingai/model/model.xgo:67:1
+//line klingai/model/model.xgo:68:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:67:1
+//line klingai/model/model.xgo:68:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:67:1
+//line klingai/model/model.xgo:68:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:67:1
+//line klingai/model/model.xgo:68:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:68:1
+//line klingai/model/model.xgo:69:1
 	responseInfo := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:68:1
+//line klingai/model/model.xgo:69:1
 		responseHeader.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:68:1
+//line klingai/model/model.xgo:69:1
 			if self.XGo_Attr__0("class") == "response-info" {
-//line klingai/model/model.xgo:68:1
+//line klingai/model/model.xgo:69:1
 				if
-//line klingai/model/model.xgo:68:1
+//line klingai/model/model.xgo:69:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:68:1
+//line klingai/model/model.xgo:69:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:68:1
+//line klingai/model/model.xgo:69:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:68:1
+//line klingai/model/model.xgo:69:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:69:1
+//line klingai/model/model.xgo:70:1
 	responseContent := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:69:1
+//line klingai/model/model.xgo:70:1
 		responseSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:69:1
+//line klingai/model/model.xgo:70:1
 			if self.XGo_Attr__0("class") == "code-content-wrapper" {
-//line klingai/model/model.xgo:69:1
+//line klingai/model/model.xgo:70:1
 				if
-//line klingai/model/model.xgo:69:1
+//line klingai/model/model.xgo:70:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:69:1
+//line klingai/model/model.xgo:70:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:69:1
+//line klingai/model/model.xgo:70:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:69:1
+//line klingai/model/model.xgo:70:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 	respBody, comments := func() (_xgo_ret interface{}, _xgo_ret2 NodeComments) {
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 		var _xgo_err error
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 		_xgo_ret, _xgo_ret2, _xgo_err = parseCommentedJson(html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 			responseContent.XGo_Any("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 				if self.XGo_Attr__0("class") == "code-body" {
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 					if
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 					_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 						if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 							return false
 						}
 					}
 				}
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 				return true
 			})
 		}))
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 		if _xgo_err != nil {
-//line klingai/model/model.xgo:70:1
-			_xgo_err = errors.NewFrame(_xgo_err, "parseCommentedJson(responseContent.**.div@($class == \"code-body\"))", "klingai/model/model.xgo", 70, "model.getAPI")
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
+			_xgo_err = errors.NewFrame(_xgo_err, "parseCommentedJson(responseContent.**.div@($class == \"code-body\"))", "klingai/model/model.xgo", 71, "model.getAPI")
+//line klingai/model/model.xgo:71:1
 			panic(_xgo_err)
 		}
-//line klingai/model/model.xgo:70:1
+//line klingai/model/model.xgo:71:1
 		return
 	}()
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 	ret := &API{Title: endpointContent.XGo_Elem("h2").Text__0(), Req: Request{Method: info.XGo_Elem("span").Text__0(), Path: info.XGo_Elem("code").Text__0(), Language: strings.TrimSpace(html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 		codeHeader.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 			if self.XGo_Attr__0("class") == "language-tabs-measure" {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 				if
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 			return true
 		})
 	}).Text__0()), Code: html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 		codeContent.XGo_Any("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 			if self.XGo_Attr__0("class") == "code-body" {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 				if
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 			return true
 		})
 	}).Text__0()}, Resp: Response{Status: func() (_xgo_ret int) {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 		var _xgo_err error
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 		_xgo_ret, _xgo_err = html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 			responseInfo.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 				if self.XGo_Attr__0("class") == "status-badge" {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 					if
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 					_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 						if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 							return false
 						}
 					}
 				}
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 				return true
 			})
 		}).Int()
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 		if _xgo_err != nil {
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 			return 0
 		}
-//line klingai/model/model.xgo:71:1
+//line klingai/model/model.xgo:72:1
 		return
 	}(), Body: respBody, Comments: comments}}
 	for
-//line klingai/model/model.xgo:85:1
+//line klingai/model/model.xgo:86:1
 	paramSection := range html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:85:1
+//line klingai/model/model.xgo:86:1
 		endpointContent.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:85:1
+//line klingai/model/model.xgo:86:1
 			if self.XGo_Attr__0("class") == "param-section" {
-//line klingai/model/model.xgo:85:1
+//line klingai/model/model.xgo:86:1
 				if
-//line klingai/model/model.xgo:85:1
+//line klingai/model/model.xgo:86:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:85:1
+//line klingai/model/model.xgo:86:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:85:1
+//line klingai/model/model.xgo:86:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:85:1
+//line klingai/model/model.xgo:86:1
 			return true
 		})
 	}).XGo_Enum() {
-//line klingai/model/model.xgo:86:1
-		sectionTitle := paramSection.XGo_Elem("h3").Text__0()
 //line klingai/model/model.xgo:87:1
-		switch strings.TrimSpace(sectionTitle) {
+		sectionTitle := paramSection.XGo_Elem("h3").Text__0()
 //line klingai/model/model.xgo:88:1
-		case "Request Header":
-//line klingai/model/model.xgo:112:1
+		switch strings.TrimSpace(sectionTitle) {
+//line klingai/model/model.xgo:89:1
+		case "Request Header", "请求头":
+//line klingai/model/model.xgo:113:1
 			ret.Req.Headers = getParams(paramSection)
-//line klingai/model/model.xgo:90:1
-		case "Request Body":
 //line klingai/model/model.xgo:91:1
-			ret.Req.Body = getParams(paramSection)
+		case "Request Body", "请求体":
 //line klingai/model/model.xgo:92:1
-		case "Path Parameters":
+			ret.Req.Body = getParams(paramSection)
 //line klingai/model/model.xgo:93:1
-			ret.Req.PathParams = getParams(paramSection)
+		case "Path Parameters", "路径参数":
 //line klingai/model/model.xgo:94:1
-		case "Query Parameters":
+			ret.Req.PathParams = getParams(paramSection)
 //line klingai/model/model.xgo:95:1
-			ret.Req.Query = getParams(paramSection)
+		case "Query Parameters", "查询参数":
 //line klingai/model/model.xgo:96:1
-		default:
+			ret.Req.Query = getParams(paramSection)
 //line klingai/model/model.xgo:97:1
+		default:
+//line klingai/model/model.xgo:98:1
 			panic("unexpected param-section: " + sectionTitle)
 		}
 	}
-//line klingai/model/model.xgo:100:1
+//line klingai/model/model.xgo:101:1
 	return ret
 }
-//line klingai/model/model.xgo:103:1
+//line klingai/model/model.xgo:104:1
 func getParams(paramSection html.NodeSet) []*Param {
-//line klingai/model/model.xgo:104:1
+//line klingai/model/model.xgo:105:1
 	paramList := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:104:1
+//line klingai/model/model.xgo:105:1
 		paramSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:104:1
+//line klingai/model/model.xgo:105:1
 			if self.XGo_Attr__0("class") == "param-list" {
-//line klingai/model/model.xgo:104:1
+//line klingai/model/model.xgo:105:1
 				if
-//line klingai/model/model.xgo:104:1
+//line klingai/model/model.xgo:105:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:104:1
+//line klingai/model/model.xgo:105:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:104:1
+//line klingai/model/model.xgo:105:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:104:1
+//line klingai/model/model.xgo:105:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 	return func() (_xgo_ret []*Param) {
 		for
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		param := range html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:105:1
+//line klingai/model/model.xgo:106:1
 			paramList.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:105:1
+//line klingai/model/model.xgo:106:1
 				if self.XGo_Attr__0("class") == "param-item" {
-//line klingai/model/model.xgo:105:1
+//line klingai/model/model.xgo:106:1
 					if
-//line klingai/model/model.xgo:105:1
+//line klingai/model/model.xgo:106:1
 					_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:105:1
+//line klingai/model/model.xgo:106:1
 						if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:105:1
+//line klingai/model/model.xgo:106:1
 							return false
 						}
 					}
 				}
-//line klingai/model/model.xgo:105:1
+//line klingai/model/model.xgo:106:1
 				return true
 			})
 		}).XGo_Enum() {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			_xgo_ret = append(_xgo_ret, getParam(param))
 		}
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		return
 	}()
 }
-//line klingai/model/model.xgo:108:1
+//line klingai/model/model.xgo:109:1
 func getParam(param html.NodeSet) *Param {
-//line klingai/model/model.xgo:109:1
+//line klingai/model/model.xgo:110:1
 	paramHeader := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:109:1
+//line klingai/model/model.xgo:110:1
 		param.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:109:1
+//line klingai/model/model.xgo:110:1
 			if self.XGo_Attr__0("class") == "param-header" {
-//line klingai/model/model.xgo:109:1
+//line klingai/model/model.xgo:110:1
 				if
-//line klingai/model/model.xgo:109:1
+//line klingai/model/model.xgo:110:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:109:1
+//line klingai/model/model.xgo:110:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:109:1
+//line klingai/model/model.xgo:110:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:109:1
+//line klingai/model/model.xgo:110:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:110:1
+//line klingai/model/model.xgo:111:1
 	paramBody := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:110:1
+//line klingai/model/model.xgo:111:1
 		param.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:110:1
+//line klingai/model/model.xgo:111:1
 			if self.XGo_Attr__0("class") == "param-body" {
-//line klingai/model/model.xgo:110:1
+//line klingai/model/model.xgo:111:1
 				if
-//line klingai/model/model.xgo:110:1
+//line klingai/model/model.xgo:111:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:110:1
+//line klingai/model/model.xgo:111:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:110:1
+//line klingai/model/model.xgo:111:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:110:1
+//line klingai/model/model.xgo:111:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:111:1
+//line klingai/model/model.xgo:112:1
 	paramEnum := html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:111:1
+//line klingai/model/model.xgo:112:1
 		paramBody.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:111:1
+//line klingai/model/model.xgo:112:1
 			if self.XGo_Attr__0("class") == "param-enum" {
-//line klingai/model/model.xgo:111:1
+//line klingai/model/model.xgo:112:1
 				if
-//line klingai/model/model.xgo:111:1
+//line klingai/model/model.xgo:112:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:111:1
+//line klingai/model/model.xgo:112:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:111:1
+//line klingai/model/model.xgo:112:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:111:1
+//line klingai/model/model.xgo:112:1
 			return true
 		})
 	}).One()
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 	return &Param{Name: html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		paramHeader.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			if self.XGo_Attr__0("class") == "param-name" {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				if
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			return true
 		})
 	}).Text__0(), Type: html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		paramHeader.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			if self.XGo_Attr__0("class") == "param-type" {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				if
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			return true
 		})
 	}).Text__0(), Required: html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		paramHeader.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			if stringutil.Contains(self.XGo_Attr__0("class"), "param-required") {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				if
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			return true
 		})
 	}).Text__0(), Defval: html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		paramHeader.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			if self.XGo_Attr__0("class") == "param-default" {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				if
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			return true
 		})
 	}).Text__0(), Description: html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		paramBody.XGo_Elem("p").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			if self.XGo_Attr__0("class") == "param-description" {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				if
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 					if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 						return false
 					}
 				}
 			}
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
+			return true
+		})
+	}).Text__0(), Notes: html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
+//line klingai/model/model.xgo:113:1
+		paramBody.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
+//line klingai/model/model.xgo:113:1
+			if self.XGo_Attr__0("class") == "param-notes" {
+//line klingai/model/model.xgo:113:1
+				if
+//line klingai/model/model.xgo:113:1
+				_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
+//line klingai/model/model.xgo:113:1
+					if !_xgo_yield(_xgo_val) {
+//line klingai/model/model.xgo:113:1
+						return false
+					}
+				}
+			}
+//line klingai/model/model.xgo:113:1
 			return true
 		})
 	}).Text__0(), Enumvals: func() (_xgo_ret []string) {
 		for
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		item := range html.NodeSet_Cast(func(_xgo_yield func(*html.Node) bool) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			paramEnum.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				if self.XGo_Attr__0("class") == "enum-value" {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 					if
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 					_xgo_val, _xgo_err := self.XGo_first(); _xgo_err == nil {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 						if !_xgo_yield(_xgo_val) {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 							return false
 						}
 					}
 				}
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 				return true
 			})
 		}).XGo_Enum() {
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 			_xgo_ret = append(_xgo_ret, item.Text__0())
 		}
-//line klingai/model/model.xgo:112:1
+//line klingai/model/model.xgo:113:1
 		return
 	}()}
 }
-//line klingai/model/model.xgo:122:1
-func URL(input interface{}) string {
-//line klingai/model/model.xgo:123:1
-	model := input.(string)
 //line klingai/model/model.xgo:124:1
+func URL(input interface{}) string {
+//line klingai/model/model.xgo:125:1
+	model := input.(string)
+//line klingai/model/model.xgo:126:1
 	return "https://app.klingai.com/dev/document-api/apiReference/model/" + model
 }

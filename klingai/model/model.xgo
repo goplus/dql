@@ -11,6 +11,7 @@ type Param struct {
 	Required    string   // Required or Optional
 	Defval      string   `json:",omitempty"` // default value
 	Description string   `json:",omitempty"` // description
+	Notes       string   `json:",omitempty"` // notes
 	Enumvals    []string `json:",omitempty"` // enum values
 }
 
@@ -85,13 +86,13 @@ func getAPI(openapi html.NodeSet) *API {
 	for paramSection in endpointContent.div@($class == "param-section") {
 		sectionTitle := paramSection.h3.text
 		switch sectionTitle.trimSpace {
-		case "Request Header":
+		case "Request Header", "请求头":
 			ret.Req.Headers = getParams(paramSection)
-		case "Request Body":
+		case "Request Body", "请求体":
 			ret.Req.Body = getParams(paramSection)
-		case "Path Parameters":
+		case "Path Parameters", "路径参数":
 			ret.Req.PathParams = getParams(paramSection)
-		case "Query Parameters":
+		case "Query Parameters", "查询参数":
 			ret.Req.Query = getParams(paramSection)
 		default:
 			panic("unexpected param-section: " + sectionTitle)
@@ -115,6 +116,7 @@ func getParam(param html.NodeSet) *Param {
 		Required:    paramHeader.span@contains($class, "param-required").text,
 		Defval:      paramHeader.span@($class == "param-default").text,
 		Description: paramBody.p@($class == "param-description").text,
+		Notes:       paramBody.div@($class == "param-notes").text,
 		Enumvals:    [item.text for item in paramEnum.span@($class == "enum-value")],
 	}
 }
