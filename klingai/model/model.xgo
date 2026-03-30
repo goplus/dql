@@ -46,44 +46,44 @@ type Result struct {
 }
 
 func New(input any, doc html.NodeSet) *Result {
-	apiDocumentContent := doc.**.div@($class == "api-document-content").one
-	markdownBody := apiDocumentContent.div@($class == "markdown-body").one
+	apiDocumentContent := doc.**.div@isClass("api-document-content").one
+	markdownBody := apiDocumentContent.div@isClass("markdown-body").one
 	return {
 		Model: input.(string),
 		Topic: markdownBody.h1.text,
-		APIs:  [getAPI(api) for api in markdownBody.div@($class == "openapi-block")],
+		APIs:  [getAPI(api) for api in markdownBody.div@isClass("openapi-block")],
 	}
 }
 
 func getAPI(openapi html.NodeSet) *API {
-	endpoint := openapi.div@($class == "endpoint-wrapper").one
-	endpointContent := endpoint.div@($class == "endpoint-content").one
-	info := endpointContent.div@($class == "endpoint-embed-info").one
-	inlineCodePanel := endpointContent.div@($class == "inline-code-panel").one
-	apiCodePanel := inlineCodePanel.div@($class == "api-code-panel").one
-	codeSection := apiCodePanel.div@($class == "code-section").one
-	codeHeader := codeSection.div@($class == "code-header").one
-	codeContent := codeSection.div@($class == "code-content-wrapper").one
-	responseSection := apiCodePanel.div@($class == "response-section").one
-	responseHeader := responseSection.div@($class == "response-header").one
-	responseInfo := responseHeader.div@($class == "response-info").one
-	responseContent := responseSection.div@($class == "code-content-wrapper").one
-	respBody, comments := parseCommentedJson(responseContent.**.div@($class == "code-body"))!
+	endpoint := openapi.div@isClass("endpoint-wrapper").one
+	endpointContent := endpoint.div@isClass("endpoint-content").one
+	info := endpointContent.div@isClass("endpoint-embed-info").one
+	inlineCodePanel := endpointContent.div@isClass("inline-code-panel").one
+	apiCodePanel := inlineCodePanel.div@isClass("api-code-panel").one
+	codeSection := apiCodePanel.div@isClass("code-section").one
+	codeHeader := codeSection.div@isClass("code-header").one
+	codeContent := codeSection.div@isClass("code-content-wrapper").one
+	responseSection := apiCodePanel.div@isClass("response-section").one
+	responseHeader := responseSection.div@isClass("response-header").one
+	responseInfo := responseHeader.div@isClass("response-info").one
+	responseContent := responseSection.div@isClass("code-content-wrapper").one
+	respBody, comments := parseCommentedJson(responseContent.**.div@isClass("code-body"))!
 	ret := &API{
 		Title: endpointContent.h2.text,
 		Req: Request{
 			Method:   info.span.text,
 			Path:     info.code.text,
-			Language: codeHeader.div@($class == "language-tabs-measure").text.trimSpace,
-			Code:     codeContent.**.div@($class == "code-body").text,
+			Language: codeHeader.div@isClass("language-tabs-measure").text.trimSpace,
+			Code:     codeContent.**.div@isClass("code-body").text,
 		},
 		Resp: Response{
-			Status:   responseInfo.span@($class == "status-badge").int?:0,
+			Status:   responseInfo.span@isClass("status-badge").int?:0,
 			Body:     respBody,
 			Comments: comments,
 		},
 	}
-	for paramSection in endpointContent.div@($class == "param-section") {
+	for paramSection in endpointContent.div@isClass("param-section") {
 		sectionTitle := paramSection.h3.text
 		switch sectionTitle.trimSpace {
 		case "Request Header", "请求头":
@@ -102,22 +102,22 @@ func getAPI(openapi html.NodeSet) *API {
 }
 
 func getParams(paramSection html.NodeSet) []*Param {
-	paramList := paramSection.div@($class == "param-list").one
-	return [getParam(param) for param in paramList.div@($class == "param-item")]
+	paramList := paramSection.div@isClass("param-list").one
+	return [getParam(param) for param in paramList.div@isClass("param-item")]
 }
 
 func getParam(param html.NodeSet) *Param {
-	paramHeader := param.div@($class == "param-header").one
-	paramBody := param.div@($class == "param-body").one
-	paramEnum := paramBody.div@($class == "param-enum").one
+	paramHeader := param.div@isClass("param-header").one
+	paramBody := param.div@isClass("param-body").one
+	paramEnum := paramBody.div@isClass("param-enum").one
 	return {
-		Name:        paramHeader.span@($class == "param-name").text,
-		Type:        paramHeader.span@($class == "param-type").text,
-		Required:    paramHeader.span@contains($class, "param-required").text,
-		Defval:      paramHeader.span@($class == "param-default").text,
-		Description: paramBody.p@($class == "param-description").text,
-		Notes:       paramBody.div@($class == "param-notes").text,
-		Enumvals:    [item.text for item in paramEnum.span@($class == "enum-value")],
+		Name:        paramHeader.span@isClass("param-name").text,
+		Type:        paramHeader.span@isClass("param-type").text,
+		Required:    paramHeader.span@hasClass("param-required").text,
+		Defval:      paramHeader.span@isClass("param-default").text,
+		Description: paramBody.p@isClass("param-description").text,
+		Notes:       paramBody.div@isClass("param-notes").text,
+		Enumvals:    [item.text for item in paramEnum.span@isClass("enum-value")],
 	}
 }
 
