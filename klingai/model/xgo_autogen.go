@@ -5,7 +5,6 @@ package model
 import (
 	"github.com/goplus/xgo/dql/html"
 	"github.com/qiniu/x/errors"
-	"github.com/qiniu/x/stringutil"
 	"strings"
 )
 
@@ -53,7 +52,7 @@ func New(input interface{}, doc html.NodeSet) *Result {
 //line klingai/model/model.xgo:49:1
 		doc.XGo_Any("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:49:1
-			if self.XGo_Attr__0("class") == "api-document-content" {
+			if self.IsClass("api-document-content") {
 //line klingai/model/model.xgo:49:1
 				if
 //line klingai/model/model.xgo:49:1
@@ -74,7 +73,7 @@ func New(input interface{}, doc html.NodeSet) *Result {
 //line klingai/model/model.xgo:50:1
 		apiDocumentContent.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:50:1
-			if self.XGo_Attr__0("class") == "markdown-body" {
+			if self.IsClass("markdown-body") {
 //line klingai/model/model.xgo:50:1
 				if
 //line klingai/model/model.xgo:50:1
@@ -98,7 +97,7 @@ func New(input interface{}, doc html.NodeSet) *Result {
 //line klingai/model/model.xgo:51:1
 			markdownBody.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:51:1
-				if self.XGo_Attr__0("class") == "openapi-block" {
+				if self.IsClass("openapi-block") {
 //line klingai/model/model.xgo:51:1
 					if
 //line klingai/model/model.xgo:51:1
@@ -128,7 +127,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:59:1
 		openapi.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:59:1
-			if self.XGo_Attr__0("class") == "endpoint-wrapper" {
+			if self.IsClass("endpoint-wrapper") {
 //line klingai/model/model.xgo:59:1
 				if
 //line klingai/model/model.xgo:59:1
@@ -149,7 +148,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:60:1
 		endpoint.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:60:1
-			if self.XGo_Attr__0("class") == "endpoint-content" {
+			if self.IsClass("endpoint-content") {
 //line klingai/model/model.xgo:60:1
 				if
 //line klingai/model/model.xgo:60:1
@@ -170,7 +169,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:61:1
 		endpointContent.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:61:1
-			if self.XGo_Attr__0("class") == "endpoint-embed-info" {
+			if self.IsClass("endpoint-embed-info") {
 //line klingai/model/model.xgo:61:1
 				if
 //line klingai/model/model.xgo:61:1
@@ -191,7 +190,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:62:1
 		endpointContent.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:62:1
-			if self.XGo_Attr__0("class") == "inline-code-panel" {
+			if self.IsClass("inline-code-panel") {
 //line klingai/model/model.xgo:62:1
 				if
 //line klingai/model/model.xgo:62:1
@@ -212,7 +211,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:63:1
 		inlineCodePanel.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:63:1
-			if self.XGo_Attr__0("class") == "api-code-panel" {
+			if self.IsClass("api-code-panel") {
 //line klingai/model/model.xgo:63:1
 				if
 //line klingai/model/model.xgo:63:1
@@ -233,7 +232,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:64:1
 		apiCodePanel.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:64:1
-			if self.XGo_Attr__0("class") == "code-section" {
+			if self.IsClass("code-section") {
 //line klingai/model/model.xgo:64:1
 				if
 //line klingai/model/model.xgo:64:1
@@ -254,7 +253,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:65:1
 		codeSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:65:1
-			if self.XGo_Attr__0("class") == "code-header" {
+			if self.IsClass("code-header") {
 //line klingai/model/model.xgo:65:1
 				if
 //line klingai/model/model.xgo:65:1
@@ -275,7 +274,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:66:1
 		codeSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:66:1
-			if self.XGo_Attr__0("class") == "code-content-wrapper" {
+			if self.IsClass("code-content-wrapper") {
 //line klingai/model/model.xgo:66:1
 				if
 //line klingai/model/model.xgo:66:1
@@ -296,7 +295,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:67:1
 		apiCodePanel.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:67:1
-			if self.XGo_Attr__0("class") == "response-section" {
+			if self.IsClass("response-section") {
 //line klingai/model/model.xgo:67:1
 				if
 //line klingai/model/model.xgo:67:1
@@ -317,7 +316,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:68:1
 		responseSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:68:1
-			if self.XGo_Attr__0("class") == "response-header" {
+			if self.IsClass("response-header") {
 //line klingai/model/model.xgo:68:1
 				if
 //line klingai/model/model.xgo:68:1
@@ -338,7 +337,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:69:1
 		responseHeader.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:69:1
-			if self.XGo_Attr__0("class") == "response-info" {
+			if self.IsClass("response-info") {
 //line klingai/model/model.xgo:69:1
 				if
 //line klingai/model/model.xgo:69:1
@@ -359,7 +358,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:70:1
 		responseSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:70:1
-			if self.XGo_Attr__0("class") == "code-content-wrapper" {
+			if self.IsClass("code-content-wrapper") {
 //line klingai/model/model.xgo:70:1
 				if
 //line klingai/model/model.xgo:70:1
@@ -384,7 +383,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:71:1
 			responseContent.XGo_Any("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:71:1
-				if self.XGo_Attr__0("class") == "code-body" {
+				if self.IsClass("code-body") {
 //line klingai/model/model.xgo:71:1
 					if
 //line klingai/model/model.xgo:71:1
@@ -403,7 +402,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:71:1
 		if _xgo_err != nil {
 //line klingai/model/model.xgo:71:1
-			_xgo_err = errors.NewFrame(_xgo_err, "parseCommentedJson(responseContent.**.div@($class == \"code-body\"))", "klingai/model/model.xgo", 71, "model.getAPI")
+			_xgo_err = errors.NewFrame(_xgo_err, "parseCommentedJson(responseContent.**.div@isClass(\"code-body\"))", "klingai/model/model.xgo", 71, "model.getAPI")
 //line klingai/model/model.xgo:71:1
 			panic(_xgo_err)
 		}
@@ -415,7 +414,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:72:1
 		codeHeader.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:72:1
-			if self.XGo_Attr__0("class") == "language-tabs-measure" {
+			if self.IsClass("language-tabs-measure") {
 //line klingai/model/model.xgo:72:1
 				if
 //line klingai/model/model.xgo:72:1
@@ -434,7 +433,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:72:1
 		codeContent.XGo_Any("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:72:1
-			if self.XGo_Attr__0("class") == "code-body" {
+			if self.IsClass("code-body") {
 //line klingai/model/model.xgo:72:1
 				if
 //line klingai/model/model.xgo:72:1
@@ -457,7 +456,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:72:1
 			responseInfo.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:72:1
-				if self.XGo_Attr__0("class") == "status-badge" {
+				if self.IsClass("status-badge") {
 //line klingai/model/model.xgo:72:1
 					if
 //line klingai/model/model.xgo:72:1
@@ -487,7 +486,7 @@ func getAPI(openapi html.NodeSet) *API {
 //line klingai/model/model.xgo:86:1
 		endpointContent.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:86:1
-			if self.XGo_Attr__0("class") == "param-section" {
+			if self.IsClass("param-section") {
 //line klingai/model/model.xgo:86:1
 				if
 //line klingai/model/model.xgo:86:1
@@ -539,7 +538,7 @@ func getParams(paramSection html.NodeSet) []*Param {
 //line klingai/model/model.xgo:105:1
 		paramSection.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:105:1
-			if self.XGo_Attr__0("class") == "param-list" {
+			if self.IsClass("param-list") {
 //line klingai/model/model.xgo:105:1
 				if
 //line klingai/model/model.xgo:105:1
@@ -563,7 +562,7 @@ func getParams(paramSection html.NodeSet) []*Param {
 //line klingai/model/model.xgo:106:1
 			paramList.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:106:1
-				if self.XGo_Attr__0("class") == "param-item" {
+				if self.IsClass("param-item") {
 //line klingai/model/model.xgo:106:1
 					if
 //line klingai/model/model.xgo:106:1
@@ -593,7 +592,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:110:1
 		param.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:110:1
-			if self.XGo_Attr__0("class") == "param-header" {
+			if self.IsClass("param-header") {
 //line klingai/model/model.xgo:110:1
 				if
 //line klingai/model/model.xgo:110:1
@@ -614,7 +613,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:111:1
 		param.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:111:1
-			if self.XGo_Attr__0("class") == "param-body" {
+			if self.IsClass("param-body") {
 //line klingai/model/model.xgo:111:1
 				if
 //line klingai/model/model.xgo:111:1
@@ -635,7 +634,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:112:1
 		paramBody.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:112:1
-			if self.XGo_Attr__0("class") == "param-enum" {
+			if self.IsClass("param-enum") {
 //line klingai/model/model.xgo:112:1
 				if
 //line klingai/model/model.xgo:112:1
@@ -656,7 +655,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:113:1
 		paramHeader.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:113:1
-			if self.XGo_Attr__0("class") == "param-name" {
+			if self.IsClass("param-name") {
 //line klingai/model/model.xgo:113:1
 				if
 //line klingai/model/model.xgo:113:1
@@ -675,7 +674,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:113:1
 		paramHeader.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:113:1
-			if self.XGo_Attr__0("class") == "param-type" {
+			if self.IsClass("param-type") {
 //line klingai/model/model.xgo:113:1
 				if
 //line klingai/model/model.xgo:113:1
@@ -694,7 +693,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:113:1
 		paramHeader.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:113:1
-			if stringutil.Contains(self.XGo_Attr__0("class"), "param-required") {
+			if self.HasClass("param-required") {
 //line klingai/model/model.xgo:113:1
 				if
 //line klingai/model/model.xgo:113:1
@@ -713,7 +712,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:113:1
 		paramHeader.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:113:1
-			if self.XGo_Attr__0("class") == "param-default" {
+			if self.IsClass("param-default") {
 //line klingai/model/model.xgo:113:1
 				if
 //line klingai/model/model.xgo:113:1
@@ -732,7 +731,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:113:1
 		paramBody.XGo_Elem("p").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:113:1
-			if self.XGo_Attr__0("class") == "param-description" {
+			if self.IsClass("param-description") {
 //line klingai/model/model.xgo:113:1
 				if
 //line klingai/model/model.xgo:113:1
@@ -751,7 +750,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:113:1
 		paramBody.XGo_Elem("div").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:113:1
-			if self.XGo_Attr__0("class") == "param-notes" {
+			if self.IsClass("param-notes") {
 //line klingai/model/model.xgo:113:1
 				if
 //line klingai/model/model.xgo:113:1
@@ -773,7 +772,7 @@ func getParam(param html.NodeSet) *Param {
 //line klingai/model/model.xgo:113:1
 			paramEnum.XGo_Elem("span").XGo_Enum()(func(self html.NodeSet) bool {
 //line klingai/model/model.xgo:113:1
-				if self.XGo_Attr__0("class") == "enum-value" {
+				if self.IsClass("enum-value") {
 //line klingai/model/model.xgo:113:1
 					if
 //line klingai/model/model.xgo:113:1
