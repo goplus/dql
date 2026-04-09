@@ -6,7 +6,7 @@ require (
 	github.com/goplus/xgo v1.7.0
 	github.com/microsoft/typescript-go v0.0.0-20260221173044-5c412f3902d5
 	github.com/qiniu/x v1.17.0
-	golang.org/x/net v0.52.0
+	golang.org/x/net v0.53.0
 )
 
 replace github.com/microsoft/typescript-go => github.com/goplus/typescript v0.1.6
@@ -16,6 +16,6 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/zeebo/xxh3 v1.1.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.42.0 // indirect
-	golang.org/x/text v0.35.0 // indirect
+	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/text v0.36.0 // indirect
 )
